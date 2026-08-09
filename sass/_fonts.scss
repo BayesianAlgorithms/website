@@ -1,0 +1,55 @@
+@font-face {
+    font-family: "TeX Gyre Pagella";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("fonts/texgyrepagella-regular.woff2") format("woff2");
+}
+@font-face {
+    font-family: "TeX Gyre Pagella";
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+    src: url("fonts/texgyrepagella-italic.woff2") format("woff2");
+}
+@font-face {
+    font-family: "TeX Gyre Pagella";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("fonts/texgyrepagella-bold.woff2") format("woff2");
+}
+@font-face {
+    font-family: "TeX Gyre Pagella";
+    font-style: italic;
+    font-weight: 700;
+    font-display: swap;
+    src: url("fonts/texgyrepagella-bolditalic.woff2") format("woff2");
+}
+@font-face {
+    font-family: "TeX Gyre Pagella Slanted";
+    font-style: oblique;
+    font-weight: 400;
+    font-display: swap;
+    src: url("fonts/texgyrepagella-slanted.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Latin Modern Roman Caps";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("fonts/lmromancaps10-regular.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Latin Modern Roman Caps";
+    font-style: oblique;
+    font-weight: 400;
+    font-display: swap;
+    src: url("fonts/lmromancaps10-oblique.woff2") format("woff2");
+}
+@font-face {
+    font-family: "KaTeX_Main";
+    font-display: block;
+    unicode-range: U+1D538-1D56B, U+1D7D8-1D7E1;
+    src: url("fonts/texgyrepagella-math-bb.woff2") format("woff2");
+}

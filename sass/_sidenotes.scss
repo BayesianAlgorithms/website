@@ -1,0 +1,28 @@
+@use "variables" as *;
+
+.marginnote {
+    display: none;
+    hyphens: none;
+}
+@for $i from 1 through $footnote-count {
+    #fr-#{$i}-1 {
+        anchor-name: --fr-#{$i};
+    }
+    #fn-#{$i} {
+        anchor-name: --fn-#{$i};
+        @if $i == 1 {
+            top: anchor(--fr-1 top);
+        } @else {
+            top: max(anchor(--fr-#{$i} top), anchor(--fn-#{$i - 1} bottom));
+        }
+    }
+}
+
+@for $i from 1 through $marginnote-count {
+    #mr-#{$i} {
+        anchor-name: --mr-#{$i};
+    }
+    body:has(#mr-#{$i}) #mn-#{$i} {
+        top: anchor(--mr-#{$i} top);
+    }
+}

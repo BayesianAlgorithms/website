@@ -1,0 +1,102 @@
+{% import 'macros/seo.html' as seo %}
+{% extends "default.html" %}
+
+{% block seo %}
+{% set ld_json_extra = '"isPartOf":{"@type":"Book","name":"' ~ config.title ~ '","url":"' ~ config.base_url ~ '"},' %}
+{{ seo::seo(page = page, ld_json_type = 'Chapter', og_type = 'article', ld_json_extra = ld_json_extra) }}
+{% endblock %}
+
+{% block main %}
+<main aria-label="Content">
+    
+    {% set number = page.relative_path | split(pat = "/") | last | split(pat = "-") | first | int(default = 0) %}
+
+    <div class="container c:container">
+        <nav class="n:menu" aria-label="Chapters">
+            <input type="checkbox" class="n:toggle" aria-label="Table of contents">
+            <div class="n:buttons">
+                {% if page.lower %}
+                    <a class="n:left" href="{{ page.lower.path | safe }}" aria-label="Previous chapter: {{ page.lower.title }}"></a>
+                {% else %}
+                    <a class="n:left" href="/#contents" aria-label="Table of contents"></a>
+                {% endif %}
+                <a class="n:up" href="/#contents" aria-label="Table of contents"></a>
+                {% if page.higher %}
+                    <a class="n:right" href="{{ page.higher.path | safe }}" aria-label="Next chapter: {{ page.higher.title }}"></a>
+                {% else %}
+                    <a class="n:right" href="/#contents" aria-label="Table of contents"></a>
+                {% endif %}
+            </div>
+
+            {% set chapters = get_section(path = "chapters/_index.md") %}
+            <ol class="list-unstyled">
+                {% for chapter in chapters.pages %}
+                    {% set current = chapter.path == page.path %}
+                    {% if chapter.toc %}
+                        {% set_global sections = chapter.toc | first | get(key = "children") %}
+                    {% else %}
+                        {% set_global sections = [] %}
+                    {% endif %}
+                    <li class="my-1{% if current %} n:current{% endif %}">
+                        {% if current %}
+                            <a href="#{% if number > 0 %}chapter-{{ number }}{% else %}{{ chapter.toc | first | get(key = 'id') }}{% endif %}" aria-current="page">{{ chapter.title }}</a>
+                        {% else %}
+                            <a href="{{ chapter.path | safe }}">{{ chapter.title }}</a>
+                        {% endif %}
+                        {% if sections %}
+                            <details {% if current %} open{% endif %}>
+                                <summary aria-label="Sections of {{ chapter.title }}"></summary>
+                                <ol class="list-unstyled mb-0 pl-3">
+                                    {% for section in sections %}
+                                        {% if section.id != "references" and section.id != "footnotes" %}
+                                            <li class="my-1"><a href="{{ chapter.path | safe }}#{{ section.id }}">{{ section.title | regex_replace(pattern = '^[0-9A-Z][0-9A-Z.]*\.\s+', rep = '') }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ol>
+                            </details>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ol>
+        </nav>
+
+        <article class="c:content" itemscope itemtype="http://schema.org/Chapter">
+            {% if number > 0 %}
+                <header>
+                    <h1 id="chapter-{{ number }}">
+                        <a href="#chapter-{{ number }}">Chapter {{ number }}</a>
+                    </h1>
+                </header>
+            {% endif %}
+            {% set has_sections = page.content is containing('<section>') or page.content is containing('<section id=') %}
+            {% if has_sections %}{% set closer = '</section>' %}{% else %}{% set closer = '' %}{% endif %}
+            {% if page.content is containing('<section class="footnotes">') %}
+                {{ page.content | replace(from='<section class="footnotes">', to=closer ~ '<section class="footnotes"><h2 id="footnotes"><a aria-label="Anchor link for: {{ id }}" href="#footnotes">Footnotes</a></h2>') | safe }}
+            {% else %}
+                {{ page.content ~ closer | safe }}
+            {% endif %}
+        </article>
+
+        <nav class="n:buttons" aria-label="Adjacent chapters">
+            {% if page.lower %}
+                {% set number = page.lower.relative_path | split(pat = "/") | last | split(pat = "-") | first | int(default = 0) %}
+                <a class="n:left" href="{{ page.lower.path | safe }}">{% if number > 0 %}{{ number }}.&nbsp;{% endif %}{{ page.lower.title }}</a>
+            {% else %}
+                <a class="n:left" href="/#contents">Contents</a>
+            {% endif %}
+            {% if page.higher %}
+                {% set number = page.higher.relative_path | split(pat = "/") | last | split(pat = "-") | first | int(default = 0) %}
+                <a class="n:right ml-auto" href="{{ page.higher.path | safe }}">{% if number > 0 %}{{ number }}.&nbsp;{% endif %}{{ page.higher.title }}</a>
+            {% else %}
+                <a class="n:right ml-auto" href="/#contents">Contents</a>
+            {% endif %}
+        </nav>
+
+        {% if config.extra.footer_text %}
+            <footer class="text-center text-secondary my-4">
+                <p class="mb-0 small">{{ config.extra.footer_text | markdown(inline = true) | safe }}</p>
+            </footer>
+        {% endif %}
+    </div>
+</main>
+{% endblock main %}

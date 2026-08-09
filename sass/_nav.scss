@@ -1,0 +1,157 @@
+@use "variables" as *;
+
+.n\:buttons {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+.n\:left::before, .n\:up::before, .n\:right::after {
+    content: "";
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125em;
+    background-color: currentColor;
+    mask-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3e%3cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5' d='M27 16H5m8-8-8 8 8 8'/%3e%3c/svg%3e");
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+}
+.n\:left::before {
+    margin-right: 0.25em;
+}
+.n\:up::before {
+    transform: rotate(90deg);
+}
+.n\:right::after {
+    margin-left: 0.25em;
+    transform: rotate(180deg);
+}
+
+.n\:menu {
+    display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr);
+    max-height: calc(100dvh - 2rem);
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    margin-right: 1rem;
+    z-index: 1000;
+    border: 1px solid var(--color-border);
+    border-radius: 0.25rem;
+    background-color: var(--color-light);
+    color: var(--color-text);
+}
+.n\:toggle {
+    appearance: none;
+    display: block;
+    width: 2.25rem;
+    height: 2.25rem;
+    margin: 0;
+    padding: 0.375rem;
+    cursor: pointer;
+}
+.n\:toggle::before {
+    content: "";
+    display: block;
+    width: 1.5rem;
+    height: 1.5rem;
+    background-color: var(--color-text);
+    mask-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3e%3cpath stroke='%23000' stroke-linecap='round' stroke-width='2.5' d='M5 8h22M5 16h22M5 24h22'/%3e%3c/svg%3e");
+    mask-position: center;
+    mask-repeat: no-repeat;
+}
+.n\:toggle:not(:checked) ~ * {
+    display: none;
+}
+.n\:menu .n\:buttons {
+    padding: 0 $container-padding;
+}
+.n\:menu > ol {
+    margin: -0.5rem 0 0 (-$container-padding);
+    padding: 0.5rem $container-padding 0.5rem calc(2 * $container-padding);
+    hyphens: none;
+    mask-image: linear-gradient(to bottom, transparent, black 0.75rem, black calc(100% - 0.75rem), transparent);
+    overflow-y: auto;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    & ol {
+        hyphens: auto;
+        text-wrap: pretty;
+    }
+}
+.n\:menu li:has(> details) {
+    position: relative;
+}
+.n\:menu li > details > summary {
+    position: absolute;
+    top: 0;
+    left: -$container-padding;
+    width: $container-padding;
+    cursor: pointer;
+    color: var(--color-secondary);
+    list-style: none;
+    &::-webkit-details-marker {
+        display: none;
+    }
+}
+.n\:menu li > details > summary::before {
+    content: "";
+    display: inline-block;
+    width: 0.625em;
+    height: 0.625em;
+    vertical-align: 0.05em;
+    background-color: currentColor;
+    mask-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3e%3cpath d='M11 5 23 16 11 27z'/%3e%3c/svg%3e");
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+}
+.n\:menu li > details[open] > summary::before {
+    transform: rotate(90deg);
+}
+
+
+.c\:container {
+    timeline-scope: --s1, --s2, --s3, --s4, --s5, --s6, --s7, --s8, --s9;
+}
+@for $i from 1 through 8 {
+    .c\:content > section:nth-of-type(#{$i}) {
+        view-timeline-name: --s#{$i};
+    }
+    .n\:current ol > li:nth-child(#{$i}) > a {
+        animation-name: section, prev-section;
+        animation-timeline: --s#{$i}, --s#{$i + 1};
+    }
+}
+.n\:menu li.n\:current {
+    scroll-initial-target: nearest;
+}
+
+.n\:menu a {
+    --color-primary: var(--color-text);
+    --color-hover: color-mix(in srgb, var(--color-primary), var(--color-white) 20%);
+    &:hover {
+        color: var(--color-hover);
+    }
+}
+.n\:menu li:not(.n\:current) > a {
+    --color-primary: var(--color-secondary);
+    --color-hover: var(--color-text);
+}
+@keyframes section {
+    0%, 100% {
+        --color-primary: var(--color-text);
+        --color-hover: color-mix(in srgb, var(--color-primary), var(--color-white) 20%);
+    }
+}
+@keyframes prev-section {
+    0%, 100% {
+        --color-primary: var(--color-secondary);
+        --color-hover: var(--color-text);
+    }
+}

@@ -1,0 +1,36 @@
+:root {
+    color-scheme: light dark;
+    --color-text: #212529;
+    --color-primary: #007bff;
+    --color-secondary: #6c757d;
+    --color-light: #f8f9fa;
+    --color-white: #fff;
+    --color-black: #000;
+    --color-border: #dee2e6;
+    --color-selection: #fec6c4;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --color-text: #d1cdc7;
+        --color-primary: #33a3ff;
+        --color-secondary: #9e9689;
+        --color-light: #1b1e1f;
+        --color-white: #181a1b;
+        --color-selection: #01393b;
+    }
+    .dark-invert {
+        filter: invert(90%) hue-rotate(180deg) sepia(10%);
+    }
+    img:not(.dark-invert) {
+        filter: brightness(80%);
+    }
+}
+
+::selection {
+    background: var(--color-selection);
+}
+
+::-moz-selection {
+    background: var(--color-selection);
+}

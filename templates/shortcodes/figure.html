@@ -1,0 +1,4 @@
+<figure{% if id %} id="{{ id }}"{% endif %}>
+    <img class="mb-2{% if dark_invert %} dark-invert{% endif %}" alt="{{ alt }}" src="{{ src | safe }}" loading="lazy">
+    <figcaption>{{ body | markdown(inline = true) | safe }}</figcaption>
+</figure>

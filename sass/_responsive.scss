@@ -1,0 +1,67 @@
+@use "variables" as *;
+
+@media (min-width: $responsive-medium-cutoff) {
+    .c\:container {
+        grid-template-columns: 1fr minmax(0, $text-width) ($note-sep + $note-width) 1fr !important;
+    }
+    .c\:content {
+        position: relative;
+        > header {
+            margin-top: 0;
+        }
+        .marginnote p, .footnotes-list p {
+            text-align: left;
+        }
+    }
+    .marginnote {
+        display: block;
+    }
+    .marginnote, .footnotes-list > li {
+        position: absolute;
+        left: calc(100% + $note-sep);
+        width: $note-width;
+    }
+    .footnotes > h2 {
+        display: none;
+    }
+    .footnotes-list {
+        margin: 0;
+        a[href^="#fr-"] {
+            display: none;
+        }
+    }
+    .footnotes-list > li {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
+}
+
+@media (min-width: $responsive-large-cutoff) {
+    .c\:container {
+        grid-template-columns: 1fr minmax(0, $text-width) 1fr !important;
+    }
+    .n\:menu {
+        grid-column: 1 !important;
+        position: sticky;
+        top: 0;
+        left: auto;
+        max-height: 100vh;
+        padding: 0 0 0 $container-padding;
+        border: none;
+        margin: 0 $note-sep 0 (-$container-padding);
+    }
+    .n\:toggle {
+        display: none;
+    }
+    .n\:toggle:not(:checked) ~ * {
+        display: block;
+    }
+    .n\:menu .n\:buttons {
+        display: flex;
+        margin-top: 2rem;
+        padding: 0;
+    }
+    .n\:menu > ol {
+        padding: 0.5rem 0 0.5rem $container-padding;
+    }
+}

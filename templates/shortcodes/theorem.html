@@ -1,0 +1,8 @@
+{%- if name %}
+<aside class="marginnote">
+{{ name | markdown(inline = true) | safe }}
+</aside>
+{%- endif %}
+<div class="{{ kind | default(value = "theorem") }}"{% if id %} id="{{ id }}"{% endif %}>
+{{ body | markdown | safe }}
+</div>

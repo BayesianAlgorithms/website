@@ -1,0 +1,199 @@
+@use "variables" as *;
+
+body {
+    background-color: var(--color-light);
+    font-family: $font-body;
+    font-size: $font-size;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--color-text);
+}
+
+a {
+    text-decoration: none;
+    color: var(--color-primary);
+}
+a:hover {
+    color: color-mix(in srgb, var(--color-primary), var(--color-black) 15%);
+}
+
+.asterism {
+    width: 10rem;
+    height: 1.5px;
+    margin-right: auto;
+    margin-left: auto;
+    border: none;
+    position: relative;
+    color: var(--color-secondary);
+    background: linear-gradient(to right,
+        currentColor calc(50% - 1rem), transparent 0,
+        transparent calc(50% + 1rem), currentColor 0);
+}
+.asterism::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 0.375rem;
+    height: 0.375rem;
+    background-color: currentColor;
+    transform: rotate(45deg);
+}
+
+.github::before {
+    content: "";
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    margin-right: 0.25em;
+    vertical-align: -0.125em;
+    background-color: currentColor;
+    mask-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath d='M8 .43C3.714.43.24 3.905.24 8.192c0 3.428 2.223 6.337 5.307 7.363.388.07.53-.168.53-.374l-.01-1.32c-2.16.47-2.614-1.04-2.614-1.04-.353-.896-.862-1.135-.862-1.135-.705-.48.053-.472.053-.472.78.055 1.19.8 1.19.8.692 1.186 1.816.843 2.258.645.07-.502.27-.843.493-1.037-1.723-.197-3.534-.862-3.534-3.836 0-.847.302-1.54.8-2.082-.08-.197-.347-.986.076-2.054 0 0 .652-.21 2.134.796A7.39 7.39 0 0 1 8 4.184a7.45 7.45 0 0 1 1.943.261c1.482-1.004 2.132-.796 2.132-.796.423 1.068.157 1.857.077 2.054.497.542.798 1.235.798 2.082 0 2.98-1.814 3.637-3.543 3.83.28.24.527.713.527 1.437l-.01 2.13c0 .208.14.45.534.373 3.08-1.028 5.302-3.935 5.302-7.362C15.76 3.906 12.285.43 8 .43z'/%3e%3c/svg%3e");
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+}
+
+.definition, .theorem, .example, .lemma, .proposition, .result, .exercise {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    aside:has(+ :is(&)) {
+        margin-top: 1rem;
+    }
+    :is(&):has(+ .proof) {
+        margin-bottom: 1rem;
+    }
+    :is(&, .proof) + aside:has(+ :is(&)) {
+        margin-top: 0;
+    }
+}
+.callout, .definition, .theorem, .example, .lemma, .proposition, .result {
+    font-family: $font-slanted;
+    font-style: oblique;
+    em {
+        font-family: $font-smallcaps;
+        font-style: oblique;
+        line-height: 1;
+    }
+    strong {
+        font-family: $font-body;
+        font-style: normal;
+    }
+}
+.callout > * {
+    margin-left: 2.5rem;
+}
+.callout > :first-child::before {
+    content: "(\22C6)";
+    display: inline-block;
+    width: 2.5rem;
+    margin-left: -2.5rem;
+    padding-right: 0.25rem;
+    font-family: $font-body;
+    font-style: normal;
+    text-align: right;
+}
+.proof {
+    margin-bottom: 2rem;
+    &::after {
+        content: "\25A0";
+        float: right;
+        margin-top: -2.75rem;
+    }
+    &:has(p:last-child .katex-display)::after {
+        margin-top: -1rem;
+    }
+    &:has(p:last-child .katex-display) {
+        margin-bottom: 2.5rem;
+    }
+}
+
+.i\:container > * {
+    max-width: calc($text-width + 3rem);
+    margin-left: auto;
+    margin-right: auto;
+}
+.c\:container {
+    display: grid;
+    grid-template-columns: 1fr minmax(0, $text-width) 1fr;
+    > * {
+        grid-column: 2;
+    }
+}
+
+.i\:content, .c\:content {
+    h1, h2, h3, h4 {
+        margin-top: 2rem;
+    }
+    h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+        --color-primary: var(--color-text);
+        --color-black: var(--color-white);
+    }
+    p, li {
+        text-align: justify;
+    }
+    ul {
+        list-style-type: "\2013\2002";
+    }
+    ul.references {
+        list-style: none;
+        padding-left: 0;
+        li {
+            padding-left: 1.5rem;
+            text-indent: -1.5rem;
+            text-align: justify;
+        }
+    }
+    li {
+        margin-top: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+    p:has(+ ol), p:has(+ ul) {
+        margin-bottom: 0.25rem;
+    }
+    blockquote {
+        border-left: 4px solid color-mix(in srgb, var(--color-secondary), var(--color-white) 25%);
+        padding-left: 1rem;
+        font-style: italic;
+        p:last-child {
+            margin-bottom: 0;
+        }
+    }
+    pre {
+        border: 1px solid color-mix(in srgb, var(--color-secondary), var(--color-white) 87.5%);
+        border-radius: 0.25rem;
+        background-color: var(--color-white);
+        padding: 0.75rem;
+        margin-top: 0;
+        margin-bottom: 1rem;
+        white-space: pre-wrap;
+    }
+    table {
+        margin-bottom: 1rem;
+    }
+}
+
+.i\:content {
+    ol li {
+        padding-left: 0.5rem;
+        &::marker {
+            color: var(--color-secondary);
+        }
+    }
+    ul li {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+}
+.c\:content {
+    > header {
+        margin-top: 4rem;
+    }
+    > h1 {
+        width: max-content;
+        max-width: calc(100vw - 3 * $container-padding);
+    }
+    .katex {
+        font-size: $katex-font-scale !important;
+    }
+}

@@ -1,0 +1,31 @@
+{% import 'macros/seo.html' as seo %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="{{ get_url(path = 'main.css') | safe }}">
+
+        {% set touch_icon = get_image_metadata(path = 'apple-touch-icon.png', allow_missing = true) %}
+        {% if touch_icon %}
+            <link rel="shortcut icon" type="image/x-icon" href="{{ get_url(path = 'favicon.ico') | safe }}">
+            <link rel="apple-touch-icon" sizes="152x152" href="{{ get_url(path = 'apple-touch-icon.png') | safe }}" type="image/png">
+        {% endif %}
+
+        {% if page %}{% include "includes/katex.html" %}{% endif %}
+
+        <title>{{ config.title }}{% if page.title %}{{ ' | ' ~ page.title }}{% elif section.title and section.path != '/' %}{{ ' | ' ~ section.title }}{% endif %}</title>
+
+        {% block seo %}
+        {{ seo::seo(page = section | default(value = page)) }}
+        {% endblock %}
+    </head>
+
+    <body>
+        {% block main %}{% endblock main %}
+    </body>
+
+</html>

@@ -1,0 +1,44 @@
+{%- set data = load_data(path = bibfile, format = "bibtex") %}
+<ul class="references">
+    {%- for key in keys %}
+    {%- set entry = data.bibliographies | filter(attribute = "citation_key", value = key) | first %}
+    {#- set_global throughout: a plain set inside the loop would be iteration-
+        scoped and shadow the global that the appends below write to #}
+    {%- set_global names = [] %}
+    {%- for name in entry.tags.author | split(pat = " and ") %}
+        {%- if name is containing(",") %}
+            {%- set parts = name | split(pat = ", ") %}
+            {%- set_global names = names | concat(with = parts.1 ~ " " ~ parts.0) %}
+        {%- else %}
+            {%- set_global names = names | concat(with = name) %}
+        {%- endif %}
+    {%- endfor %}
+    {%- if names | length <= 2 %}
+        {%- set authors = names | join(sep = " and ") %}
+    {%- else %}
+        {%- set head = names | slice(end = -1) | join(sep = ", ") %}
+        {%- set tail = names | last %}
+        {%- set authors = head ~ ", and " ~ tail %}
+    {%- endif %}
+    {%- if entry.entry_type == "book" %}
+        {%- set work = "<em>" ~ entry.tags.title ~ "</em>. " ~ entry.tags.publisher %}
+    {%- else %}
+        {%- if entry.entry_type == "article" %}
+            {%- set venue = entry.tags.journal %}
+        {%- elif entry.entry_type == "inproceedings" %}
+            {%- set venue = entry.tags.booktitle %}
+        {%- elif entry.entry_type == "preprint" %}
+            {%- set venue = entry.tags.eprinttype ~ ":" ~ entry.tags.eprint %}
+        {%- endif %}
+        {%- set work = entry.tags.title ~ ". <em>" ~ venue ~ "</em>" %}
+    {%- endif %}
+    {#- the markdown filter applies the site's smart punctuation to
+        apostrophes in titles, as it did when the converter emitted these #}
+    {%- set line = authors ~ ". " ~ work ~ ", " ~ entry.tags.year ~ "." %}
+    {#- one backref arrow per citation of this key, numbered from the second
+        arrow on, matching Zola's footnote backref format #}
+    {%- set count = counts | nth(n = loop.index0) %}
+    <li id="ref-{{ key }}">{{ line | markdown(inline = true) | safe }}
+        {%- for i in range(end = count) %} <a href="#cite-{{ key }}-{{ i + 1 }}">&#8617;{% if i > 0 %}{{ i + 1 }}{% endif %}</a>{% endfor %}</li>
+    {%- endfor %}
+</ul>

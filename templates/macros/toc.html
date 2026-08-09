@@ -1,0 +1,43 @@
+{#
+Rendering the table of contents from within markdown content is not possible
+using a shortcode alone, because Zola renders shortcodes before populating the
+section's list of pages, and does not expose get_section in shortcode context.
+To handle this, the table_of_contents shortcode inserts only a placeholder div,
+and the insert macro below splits the rendered content on that placeholder and
+splices the rendered table of contents into its place. This is a simplified
+single-marker variant of the workaround used in the Academic Workshop theme's
+macros/list.html, which additionally carries a section name through paired
+markers: here there is only one chapters section, so no parameters are needed.
+Note that the insert macro refers to its sibling macro through the toc
+namespace rather than self, since Tera does not resolve self across an import
+boundary, so this file must be imported as toc by any calling template.
+It would be great to rewrite this in a simpler way if future Zola or Tera
+changes make it possible without workarounds.
+#}
+
+{% macro insert(content) %}
+{% set parts = content | split(pat = '<div table-of-contents></div>') %}
+{% for part in parts %}
+    {{ part | safe }}
+    {% if loop.first and not loop.last %}
+        {{ toc::items() }}
+    {% endif %}
+{% endfor %}
+{% endmacro %}
+
+{% macro items() %}
+{% set chapters = get_section(path = "chapters/_index.md") %}
+<ol>
+    {% for chapter in chapters.pages %}
+        {% if chapter.extra.in_toc | default(value = true) %}
+            {% set number = chapter.relative_path | split(pat = "/") | last | split(pat = "-") | first | int(default = 0) %}
+            <li class="my-3{% if number == 0 %} list-unstyled{% endif %}" {% if number > 0 %}value="{{ number }}"{% endif %}>
+                <a class="h5" href="{{ chapter.path | safe }}">{{ chapter.title }}</a>
+                {% if chapter.description %}
+                    <p>{{ chapter.description }}</p>
+                {% endif %}
+            </li>
+        {% endif %}
+    {% endfor %}
+</ol>
+{% endmacro %}

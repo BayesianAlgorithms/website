@@ -1,0 +1,27 @@
+$container-width: 1140px;
+$container-padding: 15px;
+
+$text-width: 40rem;
+$note-width: 10rem;
+$note-sep: 2.75rem;
+
+$responsive-medium-cutoff: 56rem;
+$responsive-large-cutoff: 72rem;
+
+$font-size: 1.125rem;
+$h1-font-size: 2.5rem;
+$h2-font-size: 2rem;
+$h3-font-size: 1.75rem;
+$h4-font-size: 1.5rem;
+$h5-font-size: 1.25rem;
+$h6-font-size: 1.125rem;
+$katex-font-scale: 1em;
+
+$footnote-count: 5;
+$marginnote-count: 5;
+
+$font-fallback: Palatino, "Palatino Linotype", "URW Palladio L", Georgia, serif;
+$font-body: "TeX Gyre Pagella", $font-fallback;
+$font-slanted: "TeX Gyre Pagella Slanted", $font-fallback;
+$font-smallcaps: "Latin Modern Roman Caps", "TeX Gyre Pagella", $font-fallback;
+

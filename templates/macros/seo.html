@@ -1,0 +1,32 @@
+{% macro seo(page, ld_json_type='WebPage', og_type='website', ld_json_extra='') %}
+{% set url = get_url(path = page.path, trailing_slash = true) %}
+{% if page.extra.image %}
+    {% set card_url = url ~ page.extra.image %}
+    {% set card_metadata = get_image_metadata(path = page.colocated_path ~ page.extra.image) %}
+{% else %}
+    {% set card_url = get_url(path = 'apple-touch-icon.png') %}
+    {% set card_metadata = get_image_metadata(path = 'apple-touch-icon.png', allow_missing = true) %}
+{% endif %}
+<meta property="og:title" content="{{ page.title | default(value = config.title) }}">
+<meta name="author" content="{{ config.author }}">
+{% if page.description %}
+    <meta name="description" content="{{ page.description }}">
+    <meta property="og:description" content="{{ page.description }}">
+{% endif %}
+<link rel="canonical" href="{{ url | safe }}">
+<meta property="og:url" content="{{ url | safe }}">
+<meta property="og:site_name" content="{{ config.title }}">
+{% if card_metadata %}
+    <meta property="og:image" content="{{ card_url | safe }}">
+    <meta property="og:image:width" content="{{ card_metadata.width }}">
+    <meta property="og:image:height" content="{{ card_metadata.height }}">
+    <meta property="og:image:type" content="image/png">
+{% endif %}
+<meta property="og:type" content="{{ og_type }}">
+<meta name="twitter:card" content="{% if page.extra.image %}summary_large_image{% else %}summary{% endif %}">
+{% if card_metadata %}
+    <meta name="twitter:image" content="{{ card_url | safe }}">
+{% endif %}
+<meta name="twitter:title" content="{{ page.title | default(value = config.title) }}">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"{{ ld_json_type }}","author":{"@type":"Person","name":"{{ config.author }}"},{% if page.description %}"description":"{{ page.description }}",{% endif %}"headline":"{{ page.title | default(value = config.title) }}",{% if card_metadata %}"image":"{{ card_url | safe }}",{% endif %}{{ ld_json_extra | safe }}"url":"{{ url | safe }}"}</script>
+{% endmacro %}

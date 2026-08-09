@@ -1,0 +1,90 @@
+name: Build and Deploy Website
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          submodules: 'recursive'
+      - name: Download Zola
+        run: curl -fLsS "https://github.com/getzola/zola/releases/download/v0.22.1/zola-v0.22.1-x86_64-unknown-linux-gnu.tar.gz" | tar xzf - -C /usr/local/bin
+      - name: Verify Zola binary
+        run: echo "45de6b2559aba4df42199dc6b0161acb914d37be4ccaa03297cd4a26c8e14042  /usr/local/bin/zola" | shasum -a 256 -b -c --strict
+      - name: Build website
+        run: zola build
+      - name: Check for server side KaTeX
+        run: grep -c "server_side_katex\s*=\s*true" config.toml | sed s/1/SERVER_SIDE_KATEX=true/ | sed s/0/SERVER_SIDE_KATEX=false/ >> $GITHUB_ENV
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        if: ${{ env.SERVER_SIDE_KATEX == 'true' }}
+      - name: Install KaTeX
+        run: npm install --ignore-scripts --before="$(date -d '14 days ago' -Iseconds)" katex
+        if: ${{ env.SERVER_SIDE_KATEX == 'true' }}
+      - name: Find KaTeX script directory
+        run: if [ -d scripts ]; then echo "KATEX_SCRIPT_DIR=scripts"; else echo "KATEX_SCRIPT_DIR=themes/academic-paper/scripts"; fi >> $GITHUB_ENV
+        if: ${{ env.SERVER_SIDE_KATEX == 'true' }}
+      - name: Render KaTeX
+        run: node $KATEX_SCRIPT_DIR/katex.js
+        if: ${{ env.SERVER_SIDE_KATEX == 'true' }}
+      - name: Copy KaTeX CSS and fonts
+        run: cp node_modules/katex/dist/katex.min.css public; cp -r node_modules/katex/dist/fonts public/fonts
+        if: ${{ env.SERVER_SIDE_KATEX == 'true' }}
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: ./public
+          name: github-pages
+          retention-days: 1
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: github-pages
+      - name: Unzip artifact
+        run: mkdir public; tar -xvf artifact.tar -C public
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy public --project-name=${{ secrets.CLOUDFLARE_PROJECT_NAME }}
+      - name: Delete old deployments
+        run: |-
+          API_URL="https://api.cloudflare.com/client/v4/accounts/$ACCOUNT_ID/pages/projects/$PROJECT_NAME/deployments"
+          response=$(curl -s -H "Authorization: Bearer $API_TOKEN" "$API_URL")
+          index=0
+          echo "$response" | jq -c '.result[] | {id: .id, created_on: .created_on}' | while read -r deployment; do
+            deployment_id=$(echo "$deployment" | jq -r '.id')
+            deployment_date=$(echo "$deployment" | jq -r '.created_on')
+            if [[ "$index" -eq 0 ]]; then
+              echo "Skipping active deployment $deployment_id from $deployment_date"
+            else
+              echo "Deleting deployment $deployment_id from $deployment_date"
+              curl -s -X DELETE -H "Authorization: Bearer $API_TOKEN" "$API_URL/$deployment_id"
+            fi
+            index=$((index+1))
+          done
+        env:
+          ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          PROJECT_NAME: ${{ secrets.CLOUDFLARE_PROJECT_NAME }}
+          API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

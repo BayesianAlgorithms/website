@@ -1,0 +1,37 @@
+{% import 'macros/seo.html' as seo %}
+{% import 'macros/toc.html' as toc %}
+{% extends "default.html" %}
+
+{% block seo %}
+{{ seo::seo(page = section, ld_json_type = 'Book', og_type = 'book') }}
+{% endblock %}
+
+{% block main %}
+<main aria-label="Content">
+    <div class="container i:container">
+
+        <header class="mt-5 text-center">
+            <h1>{{ config.title }}</h1>
+            <p class="h3 text-secondary">{{ config.author }}</p>
+            {% if config.extra.cover %}
+                <img class="mx-auto my-5 dark-invert" src="{{ get_url(path = config.extra.cover) | safe }}" alt="{{ config.title }}">
+            {% endif %}
+            {% if section.description %}
+                <p class="h5 text-balanced"><em>{{ section.description }}</em></p>
+            {% endif %}
+            <hr class="asterism my-5">
+        </header>
+
+        <div class="i:content">
+            {{ toc::insert(content = section.content) }}
+        </div>
+
+        {% if config.extra.footer_text %}
+            <footer class="text-center text-secondary my-4">
+                <p class="mb-0 small">{{ config.extra.footer_text | markdown(inline = true) | safe }}</p>
+            </footer>
+        {% endif %}
+
+    </div>
+</main>
+{% endblock main %}

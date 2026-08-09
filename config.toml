@@ -1,0 +1,18 @@
+base_url = "https://bayesianalgorithms.com"
+title = "Bayesian Decision-making Algorithms"
+author = "Alexander Terenin"
+compile_sass = true
+build_search_index = false
+generate_feeds = false
+hard_link_static = true
+minify_html = true
+
+[markdown]
+highlighting.light_theme = "github-light"
+highlighting.dark_theme = "github-dark"
+smart_punctuation = true
+bottom_footnotes = true
+
+[extra]
+server_side_katex = true
+footer_text = "© 2026 Alexander Terenin. All rights reserved."

@@ -1,0 +1,27 @@
+{#
+An inline citation for one group of works by the same authors, whose body
+is the citation as it should read, e.g. "Blackwell (1951, 1953)". Each
+work's year is computed from its citation key's two-digit suffix, with
+suffixes below 30 read as 20xx and the rest as 19xx. The template splits
+the body at each year, wrapping everything up to the first year in the
+first work's link, each further year in its own work's link, and whatever
+follows the last year, such as a note and the closing parenthesis, in the
+last one. The n array supplies the occurrence ids the reference entries'
+backref arrows point to.
+#}
+{%- set_global remaining = body | trim %}
+{%- for key in keys %}
+    {%- set parsed_year = key | regex_replace(pattern = `^.*(?P<y>\d\d)$`, rep = `$y`) %}
+    {%- if parsed_year | int < 30 %}
+        {%- set year = "20" ~ parsed_year %}
+    {%- else %}
+        {%- set year = "19" ~ parsed_year %}
+    {%- endif %}
+    {%- set parts = remaining | split(pat = year) %}
+    {%- set before = parts | first %}
+    {%- set_global remaining = parts | slice(start = 1) | join(sep = year) %}
+    {%- if not loop.first %}{{ before }}{% endif -%}
+    <a id="cite-{{ key }}-{{ n | nth(n = loop.index0) }}" href="#ref-{{ key }}">
+        {%- if loop.first %}{{ before }}{% endif %}{{ year }}{% if loop.last %}{{ remaining }}{% endif -%}
+    </a>
+{%- endfor -%}
