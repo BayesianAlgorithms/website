@@ -29,15 +29,13 @@ changes make it possible without workarounds.
 {% set chapters = get_section(path = "chapters/_index.md") %}
 <ol>
     {% for chapter in chapters.pages %}
-        {% if chapter.extra.in_toc | default(value = true) %}
-            {% set number = chapter.relative_path | split(pat = "/") | last | split(pat = "-") | first | int(default = 0) %}
-            <li class="my-3{% if number == 0 %} list-unstyled{% endif %}" {% if number > 0 %}value="{{ number }}"{% endif %}>
-                <a class="h5" href="{{ chapter.path | safe }}">{{ chapter.title }}</a>
-                {% if chapter.description %}
-                    <p>{{ chapter.description }}</p>
-                {% endif %}
-            </li>
-        {% endif %}
+        {% set number = chapter.relative_path | split(pat = "/") | last | split(pat = "-") | first | int(default = 0) %}
+        <li class="my-3{% if number == 0 %} list-unstyled{% endif %}" {% if number > 0 %}value="{{ number }}"{% endif %}>
+            <a class="h5" href="{{ chapter.path | safe }}">{{ chapter.title }}</a>
+            {% if chapter.description %}
+                <p>{{ chapter.description }}</p>
+            {% endif %}
+        </li>
     {% endfor %}
 </ol>
 {% endmacro %}

@@ -93,4 +93,6 @@ small {
     border: 1px solid var(--color-border);
     border-radius: 0.25rem;
 }
-
+.rounded { 
+    border-radius: 0.25rem !important; 
+}

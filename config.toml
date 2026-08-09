@@ -15,4 +15,5 @@ bottom_footnotes = true
 
 [extra]
 server_side_katex = true
+cover = "cover.svg"
 footer_text = "© 2026 Alexander Terenin. All rights reserved."

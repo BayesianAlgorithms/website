@@ -14,7 +14,7 @@
             <h1>{{ config.title }}</h1>
             <p class="h3 text-secondary">{{ config.author }}</p>
             {% if config.extra.cover %}
-                <img class="mx-auto my-5 dark-invert" src="{{ get_url(path = config.extra.cover) | safe }}" alt="{{ config.title }}">
+                <img class="mx-auto my-5 rounded" src="{{ get_url(path = config.extra.cover) | safe }}" alt="{{ config.title }}">
             {% endif %}
             {% if section.description %}
                 <p class="h5 text-balanced"><em>{{ section.description }}</em></p>
