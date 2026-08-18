@@ -125,10 +125,6 @@ a:hover {
     h1, h2, h3, h4 {
         margin-top: 2rem;
     }
-    h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
-        --color-primary: var(--color-text);
-        --color-black: var(--color-white);
-    }
     p, li {
         text-align: justify;
     }
@@ -184,6 +180,9 @@ a:hover {
         margin-top: 0;
         margin-bottom: 0;
     }
+    sup {
+        vertical-align: top;
+    }
 }
 .c\:content {
     > header {
@@ -192,6 +191,10 @@ a:hover {
     > h1 {
         width: max-content;
         max-width: calc(100vw - 3 * $container-padding);
+    }
+    h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+        --color-primary: var(--color-text);
+        --color-black: var(--color-white);
     }
     .katex {
         font-size: $katex-font-scale !important;

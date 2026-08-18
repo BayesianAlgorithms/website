@@ -30,10 +30,12 @@ changes make it possible without workarounds.
 <ol>
     {% for chapter in chapters.pages %}
         {% set number = chapter.relative_path | split(pat = "/") | last | split(pat = "-") | first | int(default = 0) %}
-        <li class="my-3{% if number == 0 %} list-unstyled{% endif %}" {% if number > 0 %}value="{{ number }}"{% endif %}>
-            <a class="h5" href="{{ chapter.path | safe }}">{{ chapter.title }}</a>
+        <li class="my-4{% if number == 0 %} list-unstyled{% endif %}" {% if number > 0 %}value="{{ number }}"{% endif %}>
+            <h2 class="h4 mt-0 mb-1">
+                <a href="{{ chapter.path | safe }}">{{ chapter.title }}</a>
+            </h2>
             {% if chapter.description %}
-                <p>{{ chapter.description }}</p>
+                <p>{{ chapter.description | markdown(inline = true) | safe }}</p>
             {% endif %}
         </li>
     {% endfor %}

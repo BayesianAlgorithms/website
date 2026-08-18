@@ -10,8 +10,9 @@
 <meta property="og:title" content="{{ page.title | default(value = config.title) }}">
 <meta name="author" content="{{ config.author }}">
 {% if page.description %}
-    <meta name="description" content="{{ page.description }}">
-    <meta property="og:description" content="{{ page.description }}">
+    {% set description = page.description | markdown(inline = true) | striptags %}
+    <meta name="description" content="{{ description }}">
+    <meta property="og:description" content="{{ description }}">
 {% endif %}
 <link rel="canonical" href="{{ url | safe }}">
 <meta property="og:url" content="{{ url | safe }}">
@@ -28,5 +29,5 @@
     <meta name="twitter:image" content="{{ card_url | safe }}">
 {% endif %}
 <meta name="twitter:title" content="{{ page.title | default(value = config.title) }}">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"{{ ld_json_type }}","author":{"@type":"Person","name":"{{ config.author }}"},{% if page.description %}"description":"{{ page.description }}",{% endif %}"headline":"{{ page.title | default(value = config.title) }}",{% if card_metadata %}"image":"{{ card_url | safe }}",{% endif %}{{ ld_json_extra | safe }}"url":"{{ url | safe }}"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"{{ ld_json_type }}","author":{"@type":"Person","name":"{{ config.author }}"},{% if page.description %}"description":{{ description | json_encode | safe }},{% endif %}"headline":"{{ page.title | default(value = config.title) }}",{% if card_metadata %}"image":"{{ card_url | safe }}",{% endif %}{{ ld_json_extra | safe }}"url":"{{ url | safe }}"}</script>
 {% endmacro %}

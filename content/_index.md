@@ -6,16 +6,16 @@ template = "index.html"
 cover = "cover.svg"
 +++
 
-## Contents
+# Contents
 
 {{ table_of_contents() }}
 
-## Contact
+# Contact
 
 You can contact me via [email](https://avt.im/) or [social](https://twitter.com/avt_im/) [media](https://www.linkedin.com/in/aterenin/) for feedback, questions, and suggestions.
 Please open a [GitHub issue](https://github.com/bayesianalgorithms/website/issues/) if you find any errors, whether related to the book's technical content, or how it is rendered in any of the book's formats.
 
-## Citation
+# Citation
 
 To cite the book, please use the following BibTeX entry:
 
@@ -27,7 +27,7 @@ To cite the book, please use the following BibTeX entry:
 }
 ```
 
-## Code
+# Code
 
 Code is available in two GitHub repositories:
 - Reference implementation for benchmarks: {{ github(repo="BayesianAlgorithms/benchmarks") }}
