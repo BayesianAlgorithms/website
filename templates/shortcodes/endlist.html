@@ -1,0 +1,10 @@
+{#-
+Lets a list item continue with text after a nested list, without wrapping
+every item in a paragraph tag. In Markdown, the only way to end a nested list
+before more text in the outer item is a blank line, but that makes the outer
+list loose, and CommonMark then paragraph-wraps all of its items. An HTML
+comment also ends the inner list, since it can interrupt a paragraph, while
+keeping the list tight; the minifier removes it from the output. The rendered
+output must be exactly the comment, with no newline on either side, which
+the surrounding whitespace control ensures.
+-#}<!-- -->{#- -#}
