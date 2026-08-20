@@ -13,7 +13,7 @@ cover = "cover.svg"
 # Contact
 
 You can contact me via [email](https://avt.im/) or [social](https://twitter.com/avt_im/) [media](https://www.linkedin.com/in/aterenin/) for feedback, questions, and suggestions.
-Please open a [GitHub issue](https://github.com/bayesianalgorithms/website/issues/) if you find any errors, whether related to the book's technical content, or how it is rendered in any of the book's formats.
+Please open a [GitHub issue](https://github.com/bayesianalgorithms/website/issues/) if you find any errors, whether related to the book's technical content, or how it is rendered in any of the available formats.
 
 # Citation
 

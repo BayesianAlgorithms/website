@@ -121,6 +121,24 @@ a:hover {
     }
 }
 
+.i\:header {
+    a {
+        display: contents;
+        > img {
+            transition: filter 0.15s ease-in-out;
+            @media (prefers-reduced-motion: reduce) {
+                transition: none !important;
+            }
+        }
+        &:hover > img {
+            filter: brightness(115%);
+            @media(prefers-color-scheme: dark) {
+                filter: brightness(90%);
+            }
+        }
+    }
+}
+
 .i\:content, .c\:content {
     h1, h2, h3, h4 {
         margin-top: 2rem;
@@ -172,13 +190,24 @@ a:hover {
 .i\:content {
     ol li {
         padding-left: 0.5rem;
+        position: relative;
         &::marker {
             color: var(--color-secondary);
+        }
+        & h2 {
+            padding-right: 3rem;
+        }
+        & .btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding-bottom: 0;
         }
     }
     ul li {
         margin-top: 0;
         margin-bottom: 0;
+        text-align: start;
     }
     sup {
         vertical-align: top;

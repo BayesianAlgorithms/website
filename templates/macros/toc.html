@@ -34,6 +34,9 @@ changes make it possible without workarounds.
             <h2 class="h4 mt-0 mb-1">
                 <a href="{{ chapter.path | safe }}">{{ chapter.title }}</a>
             </h2>
+            {% if config.extra.pdf %}
+                <a class="btn" href="{{ get_url(path = config.extra.pdf) ~ '#page=' ~ chapter.extra.page | safe }}">PDF</a>
+            {% endif %}
             {% if chapter.description %}
                 <p>{{ chapter.description | markdown(inline = true) | safe }}</p>
             {% endif %}
