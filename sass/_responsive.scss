@@ -40,6 +40,9 @@
     .c\:container {
         grid-template-columns: 1fr minmax(0, $text-width) 1fr !important;
     }
+    .c\:content > header {
+        margin-top: 0 !important;
+    }
     .n\:menu {
         grid-column: 1 !important;
         position: sticky;

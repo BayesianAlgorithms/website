@@ -217,9 +217,10 @@ a:hover {
     > header {
         margin-top: 4rem;
     }
-    > h1 {
+    > h1:first-of-type {
         width: max-content;
         max-width: calc(100vw - 3 * $container-padding);
+        margin-bottom: 2rem;
     }
     h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
         --color-primary: var(--color-text);
