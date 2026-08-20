@@ -10,6 +10,13 @@ cover = "cover.svg"
 
 {{ table_of_contents() }}
 
+# Recent Updates
+
+This monograph is a work-in-progress, and is being written in public.
+The current version was compiled on {{ today() }}.
+The most recent major addition was the quiet launch of the website.
+To receive updates when new content is added, please subscribe to the [mailing list](/email/).
+
 # Contact
 
 You can contact me via [email](https://avt.im/) or [social](https://twitter.com/avt_im/) [media](https://www.linkedin.com/in/aterenin/) for feedback, questions, and suggestions.
