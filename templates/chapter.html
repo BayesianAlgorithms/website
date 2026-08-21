@@ -32,6 +32,7 @@
             <ol class="list-unstyled">
                 {% for chapter in chapters.pages %}
                     {% set current = chapter.path == page.path %}
+                    {% set chapter_number = chapter.relative_path | split(pat = "/") | last | split(pat = "-") | first | int(default = 0) %}
                     {% if chapter.toc %}
                         {% set_global sections = chapter.toc | first | get(key = "children") %}
                     {% else %}
@@ -43,7 +44,7 @@
                         {% else %}
                             <a href="{{ chapter.path | safe }}">{{ chapter.title }}</a>
                         {% endif %}
-                        {% if sections %}
+                        {% if sections and chapter_number > 0 %}
                             <details {% if current %} open{% endif %}>
                                 <summary aria-label="Sections of {{ chapter.title }}"></summary>
                                 <ol class="list-unstyled mb-0 pl-3">
