@@ -226,6 +226,34 @@ a:hover {
         --color-primary: var(--color-text);
         --color-black: var(--color-white);
     }
+    #notation ~ section > table {
+        width: 100%;
+        thead {
+            display: none;
+        }
+        td {
+            vertical-align: baseline;
+        }
+        td:first-child {
+            width: 7rem;
+        }
+        td:nth-child(3) {
+            width: 1.75rem;
+            text-align: right;
+        }
+        td:nth-child(2):not(:last-child) {
+            background-image: linear-gradient(var(--color-light), var(--color-light)), radial-gradient(circle, currentColor 1px, transparent 1.5px);
+            background-size: 1rem 100%, 1rem 3px;
+            background-position: left, right top 1rem;
+            background-repeat: no-repeat, repeat-x;
+            &::first-line {
+                background-color: var(--color-light);
+            }
+            &::after {
+                content: "\202f";
+            }
+        }
+    }
     .katex {
         font-size: $katex-font-scale !important;
     }
