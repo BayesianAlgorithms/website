@@ -1,0 +1,27 @@
+# {{ config.title }}
+
+> An in-progress book by {{ config.author }} on the mathematics of
+> decision-making under uncertainty and explore-exploit tradeoffs,
+> available online in HTML, PDF, and Markdown as it is written.
+
+The BibTeX entry below gives the compilation date of the current version.
+
+The Markdown uses Zola shortcodes as a light extension: constructs like
+{{ "{%" }} theorem(kind="definition", name="...") {{ "%}" }} delimit theorem environments,
+and math is written as TeX, inline in `$...$` and display in $$...$$ blocks.
+Citation keys resolve in the BibTeX file at {{ config.base_url }}/md/BDMA.bib.
+Chapters marked under construction contain planned section headings only.
+
+To report errors, whether in the book's technical content or in how it is
+rendered in any of the available formats, please open a GitHub issue at
+https://github.com/bayesianalgorithms/website/issues/, checking the
+repository first for any further instructions.
+
+{{ config.extra.footer_text }} These apply only to the presentation and
+other forms of expression, not to formal mathematical content, which by
+its nature is not copyrightable.
+
+To cite this book:
+```
+{{ config.extra.citation | trim | replace(from="${DATE}", to=now() | date(format="%Y-%m-%d")) | replace(from="${YEAR}", to=now() | date(format="%Y")) }}
+```

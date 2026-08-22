@@ -3,7 +3,8 @@ title = "Bayesian Decision-making Algorithms"
 author = "Alexander Terenin"
 compile_sass = true
 build_search_index = false
-generate_feeds = false
+generate_feeds = true
+feed_filenames = ["llms.txt", "llms-full.txt", "md/0-notation.md", "md/1-intro.md", "md/2-decision.md", "md/3-ei.md", "md/4-gittins.md", "md/5-optimism.md", "md/6-info.md", "md/7-ts.md", "md/A-appendix.md"]
 hard_link_static = true
 minify_html = true
 
@@ -16,4 +17,13 @@ bottom_footnotes = true
 [extra]
 server_side_katex = true
 cover = "cover.svg"
-footer_text = "© 2026 Alexander Terenin. All rights reserved."
+footer_text = "\u00A9 2026 Alexander Terenin. All rights reserved."
+citation = """
+@book{terenin${YEAR},
+  title = {Bayesian Decision-making Algorithms},
+  author = {Alexander Terenin},
+  year = {${YEAR}},
+  url = {https://bayesianalgorithms.com},
+  note = {Working draft: compiled on ${DATE}}
+}
+"""

@@ -3,7 +3,9 @@
 
 {% block seo %}
 {% set ld_json_extra = '"isPartOf":{"@type":"Book","name":"' ~ config.title ~ '","url":"' ~ config.base_url ~ '"},' %}
-{{ seo::seo(page = page, ld_json_type = 'Chapter', og_type = 'article', ld_json_extra = ld_json_extra) }}
+{% set md_file = page.relative_path | split(pat = "/") | last %}
+{% if page.slug != "preface" %}{% set markdown = "md/" ~ md_file %}{% else %}{% set markdown = "" %}{% endif %}
+{{ seo::seo(page = page, markdown = markdown, ld_json_type = 'Chapter', og_type = 'article', ld_json_extra = ld_json_extra) }}
 {% endblock %}
 
 {% block main %}

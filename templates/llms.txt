@@ -1,0 +1,22 @@
+{% include "llms-common.txt" %}
+
+The links below are Markdown versions of each chapter.
+
+## Chapters
+
+{% set chapters = get_section(path = "chapters/_index.md") %}
+{%- for chapter in chapters.pages -%}
+{%- if chapter.slug == "preface" %}{%- continue -%}{%- endif -%}
+{%- set head = load_data(path = "content/" ~ chapter.relative_path, format = "plain") | split(pat = "## ") | first -%}
+- [{{ chapter.title }}]({{ config.base_url }}/md/{{ chapter.relative_path | split(pat = "/") | last }}){% if "🚧" in head %} (under construction){% endif %}{% if chapter.description %}: {{ chapter.description }}{% endif %}
+{% endfor %}
+
+## Bibliography
+
+- [BDMA.bib]({{ config.base_url }}/md/BDMA.bib): BibTeX entries for every citation key used in the chapters
+
+## Optional
+
+- [Markdown edition, as a single file]({{ config.base_url }}/llms-full.txt)
+- [HTML edition]({{ config.base_url }}/)
+{% if config.extra.pdf %}- [PDF edition]({{ config.base_url }}/{{ config.extra.pdf }}){% endif %}

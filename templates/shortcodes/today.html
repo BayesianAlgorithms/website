@@ -1,9 +1,0 @@
-{%- set day = now() | date(format="%d") | int -%}
-{{ now() | date(format="%B") }} {{ day }}<sup>
-{%- if day >= 11 and day <= 13 -%}th
-{%- elif day % 10 == 1 -%}st
-{%- elif day % 10 == 2 -%}nd
-{%- elif day % 10 == 3 -%}rd
-{%- else -%}th
-{%- endif -%}
-</sup>, {{ now() | date(format="%Y") }}{{- "" -}}

@@ -1,0 +1,13 @@
+{% include "llms-common.txt" %}
+
+This file contains the complete book as Markdown, one chapter per section.
+
+{%- set chapters = get_section(path = "chapters/_index.md") -%}
+{% for chapter in chapters.pages %}
+{% if chapter.slug == "preface" %}{% continue %}{% endif %}
+
+---
+
+{% set parts = load_data(path = "content/" ~ chapter.relative_path, format = "plain") | split(pat = "+++") %}
+{{ parts | slice(start = 2) | join(sep = "+++") | trim }}
+{%- endfor -%}

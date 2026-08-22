@@ -10,10 +10,10 @@ cover = "cover.svg"
 
 {{ table_of_contents() }}
 
-# Recent Updates
+# Updates
 
 This monograph is a work-in-progress, and is being written in public.
-The current version was compiled on {{ today() }}.
+The current version's compile date can be found in the BibTeX entry below.
 The most recent major addition was the quiet launch of the website.
 To receive updates when new content is added, please subscribe to the [mailing list](/email/).
 
@@ -27,11 +27,7 @@ Please open a [GitHub issue](https://github.com/bayesianalgorithms/website/issue
 To cite the book, please use the following BibTeX entry:
 
 ```bibtex
-@book{terenin2026,
-  title = {Bayesian Decision-making Algorithms},
-  author = {Alexander Terenin},
-  year = {2026},
-}
+{{ bibtex_citation() }}
 ```
 
 # Code

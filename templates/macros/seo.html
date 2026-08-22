@@ -1,4 +1,4 @@
-{% macro seo(page, ld_json_type='WebPage', og_type='website', ld_json_extra='') %}
+{% macro seo(page, markdown='', ld_json_type='WebPage', og_type='website', ld_json_extra='') %}
 {% set url = get_url(path = page.path, trailing_slash = true) %}
 {% if page.extra.image %}
     {% set card_url = url ~ page.extra.image %}
@@ -15,6 +15,9 @@
     <meta property="og:description" content="{{ description }}">
 {% endif %}
 <link rel="canonical" href="{{ url | safe }}">
+{% if markdown %}
+    <link rel="alternate" type="text/markdown" href="{{ get_url(path = markdown) | safe }}">
+{% endif %}
 <meta property="og:url" content="{{ url | safe }}">
 <meta property="og:site_name" content="{{ config.title }}">
 {% if card_metadata %}

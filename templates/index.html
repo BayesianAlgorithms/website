@@ -3,7 +3,7 @@
 {% extends "default.html" %}
 
 {% block seo %}
-{{ seo::seo(page = section, ld_json_type = 'Book', og_type = 'book') }}
+{{ seo::seo(page = section, markdown = 'llms.txt', ld_json_type = 'Book', og_type = 'book') }}
 {% endblock %}
 
 {% block main %}
