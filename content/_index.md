@@ -14,7 +14,7 @@ cover = "cover.svg"
 
 This monograph is a work-in-progress, and is being written in public.
 The current version's compile date can be found in the BibTeX entry below.
-The most recent major addition was the quiet launch of the website.
+The most recent major addition was the public launch, consisting of the introduction and Chapter 2.
 To receive updates when new content is added, please subscribe to the [mailing list](/email/).
 
 # Contact
@@ -25,7 +25,6 @@ Please open a [GitHub issue](https://github.com/bayesianalgorithms/website/issue
 # Citation
 
 To cite the book, please use the following BibTeX entry:
-
 ```bibtex
 {{ bibtex_citation() }}
 ```

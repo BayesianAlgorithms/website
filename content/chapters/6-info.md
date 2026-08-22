@@ -3,6 +3,8 @@ title = "Information-theoretic Algorithms"
 description = "We outline the class of *entropy search algorithms*, which are constructed using information-theoretic quantities. After considering specific variants, we present the general approach of *information-based Bayesian algorithm execution*."
 slug = "information-theoretic-algorithms"
 weight = 8
+[extra]
+page = 67
 +++
 
 # Information-theoretic Algorithms

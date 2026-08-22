@@ -3,6 +3,8 @@ title = "Expected Improvement"
 description = "We derive the class of *improvement-based algorithms* from first principles, using greedy approximations to Bayesian dynamic programs. We first do so in a black-box optimization setting, followed by the general case."
 slug = "expected-improvement"
 weight = 5
+[extra]
+page = 61
 +++
 
 # Expected Improvement

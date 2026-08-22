@@ -3,6 +3,8 @@ title = "Thompson Sampling"
 description = "We study *Thompson sampling*, which uses randomization to balance explore-exploit tradeoffs in a Bayesian manner. We illustrate some surprising connections, including to the *exponential weights* algorithm. We discuss implications for exploration in large language models, which operate using random sampling."
 slug = "thompson-sampling"
 weight = 9
+[extra]
+page = 69
 +++
 
 # Thompson Sampling

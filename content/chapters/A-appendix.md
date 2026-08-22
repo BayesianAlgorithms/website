@@ -2,16 +2,24 @@
 title = "Appendix"
 slug = "appendix"
 weight = 10
+[extra]
+page = 73
 +++
 
 # Appendix
 
 🚧 Under construction. Headings indicate planned content. 🚧
 
-{{ section(id="apdx-prob") }}
+{{ section() }}
 
-## A. Review of Probability Theory
+## A. Mathematical Background
 
-{{ section(id="apdx-benchmark") }}
+### A.1. Probability Theory
+
+### A.2. Information Theory
+
+### A.3. Markov Decision Processes
+
+{{ section() }}
 
 ## B. Benchmarking Details

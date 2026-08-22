@@ -17,6 +17,7 @@ bottom_footnotes = true
 [extra]
 server_side_katex = true
 cover = "cover.svg"
+pdf = "book.pdf"
 footer_text = "\u00A9 2026 Alexander Terenin. All rights reserved."
 citation = """
 @book{terenin${YEAR},
