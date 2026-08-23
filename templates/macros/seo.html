@@ -1,12 +1,7 @@
 {% macro seo(page, markdown='', ld_json_type='WebPage', og_type='website', ld_json_extra='') %}
 {% set url = get_url(path = page.path, trailing_slash = true) %}
-{% if page.extra.image %}
-    {% set card_url = url ~ page.extra.image %}
-    {% set card_metadata = get_image_metadata(path = page.colocated_path ~ page.extra.image) %}
-{% else %}
-    {% set card_url = get_url(path = 'apple-touch-icon.png') %}
-    {% set card_metadata = get_image_metadata(path = 'apple-touch-icon.png', allow_missing = true) %}
-{% endif %}
+{% set card_url = get_url(path = 'card.png') %}
+{% set card_metadata = get_image_metadata(path = 'card.png', allow_missing = true) %}
 <meta property="og:title" content="{{ page.title | default(value = config.title) }}">
 <meta name="author" content="{{ config.author }}">
 {% if page.description %}
@@ -27,7 +22,7 @@
     <meta property="og:image:type" content="image/png">
 {% endif %}
 <meta property="og:type" content="{{ og_type }}">
-<meta name="twitter:card" content="{% if page.extra.image %}summary_large_image{% else %}summary{% endif %}">
+<meta name="twitter:card" content="{% if card_metadata %}summary_large_image{% else %}summary{% endif %}">
 {% if card_metadata %}
     <meta name="twitter:image" content="{{ card_url | safe }}">
 {% endif %}

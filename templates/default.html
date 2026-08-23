@@ -12,7 +12,7 @@
         {% set touch_icon = get_image_metadata(path = 'apple-touch-icon.png', allow_missing = true) %}
         {% if touch_icon %}
             <link rel="shortcut icon" type="image/x-icon" href="{{ get_url(path = 'favicon.ico') | safe }}">
-            <link rel="apple-touch-icon" sizes="152x152" href="{{ get_url(path = 'apple-touch-icon.png') | safe }}" type="image/png">
+            <link rel="apple-touch-icon" sizes="{{ touch_icon.width }}x{{ touch_icon.height }}" href="{{ get_url(path = 'apple-touch-icon.png') | safe }}" type="image/png">
         {% endif %}
 
         {% if page %}{% include "includes/katex.html" %}{% endif %}
