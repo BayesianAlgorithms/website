@@ -44,7 +44,7 @@ jobs:
         run: node $KATEX_SCRIPT_DIR/katex.js
         if: ${{ env.SERVER_SIDE_KATEX == 'true' }}
       - name: Copy KaTeX CSS and fonts
-        run: cp node_modules/katex/dist/katex.min.css public; cp -r node_modules/katex/dist/fonts public/fonts
+        run: cp node_modules/katex/dist/katex.min.css public; cp node_modules/katex/dist/fonts/* public/fonts/
         if: ${{ env.SERVER_SIDE_KATEX == 'true' }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
