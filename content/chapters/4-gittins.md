@@ -4,7 +4,7 @@ description = "We describe a class of Bayesian episodic decision problems that c
 slug = "gittins-indices"
 weight = 6
 [extra]
-page = 63
+page = 65
 +++
 
 # Gittins Indices

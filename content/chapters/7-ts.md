@@ -4,7 +4,7 @@ description = "We study *Thompson sampling*, which uses randomization to balance
 slug = "thompson-sampling"
 weight = 9
 [extra]
-page = 69
+page = 71
 +++
 
 # Thompson Sampling

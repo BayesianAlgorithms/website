@@ -692,6 +692,45 @@ This seemingly-trivial pair of calculations already shows that random search can
 While both methods achieve `$\Theta(T)$` regret, for random search, the constant factor hidden in the `$\Theta$`-notation is exactly the gap between the best action and the average action with respect to the uniform distribution.
 This is usually smaller than the worst possible regret, and for this reason random search can be a good initial baseline to benchmark for problems where it is otherwise not clear what to do.
 
+{% parmarginnote() %}
+Maximizing Expected Value
+{% end %}
+
+Intuitively, one might expect that learning is necessary in order to achieve good performance on an episodic decision problem.
+One can therefore ask: by itself, does it suffice?
+Arguably the simplest possible decision rule which actually uses a Bayesian model in its construction is that of *maximizing (posterior) expected value*, which is defined up to an arbitrary tie-breaking rule as
+```
+$$
+a_t = \operatorname*{\arg\max}_{a\in A} \operatorname*{\mathbb{E}}(r(a) \mid a_{1:t-1}, \sigma_{1:t-1})
+.
+\tag{2.24}
+$$
+```
+Let us see how this performs on a simple non-trivial example.
+
+{% theorem(kind="proposition") %}
+**Proposition 2.27.**
+Consider a stochastic multi-armed bandit, with `$|A|\geq 2$`, bounded rewards `$\mathcal{R} = \{r : A \to [0,1]\}$`, and standard Gaussian noise.
+Let the Bayesian model consist of a standard Gaussian prior on the rewards, along with a conjugate unit-variance Gaussian likelihood.
+Then, if the decision rule maximizes expected value, there is an `$r\in\mathcal{R}$` for which
+```
+$$
+R_T(p_{\operatorname{EV}},r) = \Omega(T)
+.
+\tag{2.25}
+$$
+```
+{% end %}
+
+The proof, given in [Section 2.7](/chapters/decision-making-under-uncertainty/#2-7-deferred-proofs), works by constructing a constant-probability unlucky event which causes the algorithm to never try the optimal action more than once.
+It is not difficult to construct similar failures for other problems, or for other models---indeed, an analogous result even holds for Bayesian regret in the model-matched setting!
+This suggests that the issue is fundamental: in sufficiently non-trivial situations, maximizing expected value simply does not produce sufficient exploration, and can be just as bad as learning nothing.
+
+If maximizing posterior expected value doesn't work, what alternatives do?
+This question turns out to be mathematically rich, and it will take the whole of this book for us to develop an incomplete but reasonably-comprehensive sense for what is possible.
+We will see that several approaches, including ones with exploration mechanisms of very different-looking character, can work.
+To get there, we first need to understand a bit more about episodic decision problems, by developing a sense for what levels of performance are possible.
+
 {{ section() }}
 
 ## 2.4. Problem Difficulty and Lower Bounds
@@ -722,14 +761,14 @@ This could be the time horizon `$T$`, or for instance the size of the action spa
 We will call the set of these variables `$V$`.
 
 {% theorem(kind="definition", name="Minimax Regret") %}
-**Definition 2.27.**
+**Definition 2.28.**
 Consider a family of episodic decision problems of the stochastic variant, parameterized by a set of variables `$v\in V\subseteq\mathbb{R}^d$`.
 Define the *minimax regret*
 ```
 $$
 M(v) = \inf_{p\in\mathcal{P}} \sup_{r\in\mathcal{R}} R_T(p,r)
 .
-\tag{2.24}
+\tag{2.26}
 $$
 ```
 We define the *difficulty* of the parameterized family to be the rate by which `$M(v)$` varies with `$v$`.
@@ -740,14 +779,14 @@ We assume throughout that the episodic decision problem is regular enough for th
 The difficulty of a Bayesian variant is defined similarly, but where we do not consider worst-case performance, and replace it with average-case performance with respect to the reward function's distribution.
 
 {% theorem(kind="definition", name="Bayesian-optimal Regret") %}
-**Definition 2.28.**
+**Definition 2.29.**
 Consider a family of episodic decision problems of the Bayesian variant, parameterized by a set of variables `$v\in V\subseteq\mathbb{R}^d$`.
 Define the *Bayesian-optimal regret*
 ```
 $$
 B(v) = \inf_{p\in\mathcal{P}} R_T(p,q)
 .
-\tag{2.25}
+\tag{2.27}
 $$
 ```
 We define the *difficulty* of the parameterized family to be the rate by which `$B(v)$` varies with `$v$`.
@@ -764,22 +803,22 @@ To aid understanding, we now briefly state the rate of the two most basic exampl
 We will omit various restrictions on the variables to ease notation, and will defer proofs of the necessary statements to later.
 
 {% theorem(kind="example") %}
-**Example 2.29.**
+**Example 2.30.**
 The difficulty of online learning with `$N = |A|$` total actions and bounded rewards `$\mathcal{R} = \{r : A \to [-1,1]\}$`, under either a stochastic variant with standard Gaussian noise, or an adversarial variant without noise, is `$\sqrt{T\log N}$`.
 {% end %}
 
 {% theorem(kind="example") %}
-**Example 2.30.**
+**Example 2.31.**
 The difficulty of a multi-armed bandit with `$K = |A|$` arms and bounded rewards `$\mathcal{R} = \{r : A \to [-1,1]\}$`, under a stochastic variant with standard Gaussian noise, is `$\sqrt{KT}$`.
 {% end %}
 
 {% theorem(kind="example") %}
-**Example 2.31.**
+**Example 2.32.**
 The difficulty of a multi-armed bandit with `$K = |A|$` arms and bounded rewards with a gap of at least `$\Delta$`, namely
 ```
 $$
 \mathcal{R} = \{r : A \to [-1,1] : r(a^*) - r(a) \geq \Delta, \forall a\neq a^*\}
-\tag{2.26}
+\tag{2.28}
 $$
 ```
 where `$a^* = \operatorname*{\arg\max}_{a\in A} r(a)$`, under a stochastic variant with standard Gaussian noise, is `$(K-1)\frac{\log T}{\Delta}$`.
@@ -801,7 +840,7 @@ Focusing on the rate means that, to compute the difficulty of an episodic decisi
 ```
 $$
 C \leq R_T(p,r)
-\tag{2.27}
+\tag{2.29}
 $$
 ```
 in the sense that for any algorithm `$p$` there is a reward `$r$` for which the inequality holds.
@@ -811,7 +850,7 @@ $$
 C \leq R_T(p,r) \leq \sup_{r\in\mathcal{R}} R_T(p,r)
 ,
 \quad \forall p\in\mathcal{P}
-\tag{2.28}
+\tag{2.30}
 $$
 ```
 and since the statement is universally quantified over `$p$`, it is equivalent to
@@ -819,7 +858,7 @@ and since the statement is universally quantified over `$p$`, it is equivalent t
 $$
 C \leq \inf_{p\in\mathcal{P}} \sup_{r\in\mathcal{R}} R_T(p,r)
 .
-\tag{2.29}
+\tag{2.31}
 $$
 ```
 If the lower bound is sharp up to constants, the specific form of `$C$` therefore reveals the correct rate.
@@ -841,13 +880,13 @@ Such a distribution should certify a regret lower bound in expectation.
 The key observation is that the existence of such a distribution implies the existence of a difficult reward function which certifies the required regret lower bound.
 
 {% theorem(kind="lemma") %}
-**Lemma 2.32.**
+**Lemma 2.33.**
 Suppose there is a `$q\in\mathcal{M}_1(\mathcal{R})$` such that, for any `$p\in\mathcal{P}$`, we have
 ```
 $$
 C \leq R_T(p,q) = \operatorname*{\mathbb{E}}_{r\sim q} R_T(p,r)
 .
-\tag{2.30}
+\tag{2.32}
 $$
 ```
 Then for every `$p\in\mathcal{P}$` there is an `$r_p \in \mathcal{R}$` for which
@@ -855,7 +894,7 @@ Then for every `$p\in\mathcal{P}$` there is an `$r_p \in \mathcal{R}$` for which
 $$
 C \leq R_T(p,r_p)
 .
-\tag{2.31}
+\tag{2.33}
 $$
 ```
 {% end %}
@@ -872,12 +911,12 @@ But there is a central principle to how they operate.
 Let us illustrate a special case of it through the following observation.
 
 {% theorem(kind="lemma", name="Equalizing Reward Distributions") %}
-**Lemma 2.33.**
+**Lemma 2.34.**
 Suppose that `$q$` is *equalizing*, in the sense that the function
 ```
 $$
 a \mapsto \operatorname*{\mathbb{E}}_{r\sim q}\left( r(a) \mid a_{1:t},\sigma_{1:t} \right)
-\tag{2.32}
+\tag{2.34}
 $$
 ```
 is constant for any history of observations `$a_{1:t}, \sigma_{1:t}$`.
@@ -894,10 +933,10 @@ For the second term, letting `$a'$` be an arbitrary action, we have
 $$
 \begin{align}
 \operatorname*{\mathbb{E}} \sum_{t=1}^T r(a_t) &= \operatorname*{\mathbb{E}} \sum_{t=1}^T \operatorname*{\mathbb{E}}(r(a_t)\mid a_{1:t-1},\sigma_{1:t-1})
-\tag{2.33}
+\tag{2.35}
 \\
 &\overset{\mathrel{\text{(i)}}}{=} \operatorname*{\mathbb{E}} \sum_{t=1}^T \operatorname*{\mathbb{E}}(r(a')\mid a_{1:t-1},\sigma_{1:t-1}) \overset{\mathrel{\text{(ii)}}}{=} \operatorname*{\mathbb{E}} \sum_{t=1}^T r(a')
-\tag{2.34}
+\tag{2.36}
 \end{align}
 $$
 ```
@@ -914,14 +953,14 @@ In presenting these results, we defer proofs to [Section 2.7](/chapters/decision
 The key reason for this is they represent a jump in difficulty---not a large one, but enough that we would rather focus attention on showcasing what is known, before seeing how.
 
 {% theorem(kind="proposition") %}
-**Proposition 2.34.**
+**Proposition 2.35.**
 Consider adversarial online learning under full feedback, with bounded rewards `$\mathcal{R} = \{r : A \to [-1,1]\}$` and no noise.
 Define the reward distribution `$q$` to be independent Rademacher across time and actions, namely
 ```
 $$
 r_t(a) \sim\operatorname{Rad}(\tfrac{1}{2})
 .
-\tag{2.35}
+\tag{2.37}
 $$
 ```
 Under this distribution, for any algorithm, if we suppose that `$N = |A|\geq 16$`, `$T$` is even, and `$T \geq \log N$`, then
@@ -929,7 +968,7 @@ Under this distribution, for any algorithm, if we suppose that `$N = |A|\geq 16$
 $$
 \frac{1}{15} \sqrt{T\log N} \leq R_T(\cdot , q)
 .
-\tag{2.36}
+\tag{2.38}
 $$
 ```
 {% end %}
@@ -956,7 +995,7 @@ As a result, we will develop this idea through presenting it in a number of rela
 We start with the setting that mirrors the preceding one---namely, stochastic online learning.
 
 {% theorem(kind="proposition") %}
-**Proposition 2.35.**
+**Proposition 2.36.**
 Consider stochastic online learning under full feedback, with bounded rewards `$\mathcal{R} = \{r : A \to [0,1]\}$` and standard Gaussian noise.
 Define the reward distribution `$q$` according to
 ```
@@ -966,7 +1005,7 @@ r(a) &= \Delta \text{𝟙}_{a=\alpha}
 &
 \alpha &\sim\operatorname{U}(A)
 .
-\tag{2.37}
+\tag{2.39}
 \end{align}
 $$
 ```
@@ -975,7 +1014,7 @@ Under this distribution, for any algorithm, if we suppose that `$N = |A|\geq 16$
 $$
 \frac{1}{4}\sqrt{T\log N} \leq R_T(\cdot , q)
 .
-\tag{2.38}
+\tag{2.40}
 $$
 ```
 {% end %}
@@ -991,7 +1030,7 @@ We used rewards in `$[0,1]$`, rather than `$[-1,1]$` as before, to simplify alge
 It turns out that the *exact same* reward distribution `$q$` is also the hard instance for stochastic bandits, with a proof that is similar in spirit, but slightly different in terms of its technical details.
 
 {% theorem(id="prop-bandit-lower-bound", kind="proposition") %}
-**Proposition 2.36.**
+**Proposition 2.37.**
 Consider a stochastic multi-armed bandit, with bounded rewards `$\mathcal{R} = \{r : A \to [0,1]\}$` and standard Gaussian noise.
 Define the reward distribution `$q$` according to
 ```
@@ -1001,7 +1040,7 @@ r(a) &= \Delta \text{𝟙}_{a=\alpha}
 &
 \alpha &\sim\operatorname{U}(A)
 .
-\tag{2.39}
+\tag{2.41}
 \end{align}
 $$
 ```
@@ -1010,7 +1049,7 @@ Under this distribution, for any algorithm, if we suppose that `$K = |A| \geq 2$
 $$
 \frac{1}{8}\sqrt{KT} \leq R_T(\cdot , q)
 .
-\tag{2.40}
+\tag{2.42}
 $$
 ```
 {% end %}
@@ -1022,12 +1061,12 @@ We now turn to the final example we will work out in detail: stochastic bandits,
 The most important aspect we will see is that this changes the rate.
 
 {% theorem(id="prop-bandit-lower-bound-with-gap", kind="proposition") %}
-**Proposition 2.37.**
+**Proposition 2.38.**
 Consider a stochastic multi-armed bandit, where the rewards are bounded with a gap, namely
 ```
 $$
 \mathcal{R} = \{r : A \to [0,1] : r(a^*) - r(a) \geq \Delta, \forall a \neq a^*\}
-\tag{2.41}
+\tag{2.43}
 $$
 ```
 where `$a^* = \operatorname*{\arg\max}_{a\in A} r(a)$`, we assume `$0 < \Delta \leq \frac{1}{2}$`, and the noise is standard Gaussian.
@@ -1046,7 +1085,7 @@ r(a) &= \Delta \text{𝟙}_{a=\alpha_1} + 2\beta\Delta \text{𝟙}_{a=\alpha_2}
 &
 \beta &\sim\operatorname{Ber}(\tfrac{1}{2})
 .
-\tag{2.42}
+\tag{2.44}
 \end{align}
 $$
 ```
@@ -1055,7 +1094,7 @@ Under this distribution, for any algorithm, if we suppose that `$K = |A| \geq 2$
 $$
 \frac{(K-1)\log T}{16\Delta} \leq R_T(\cdot , q)
 .
-\tag{2.43}
+\tag{2.45}
 $$
 ```
 {% end %}
@@ -1070,7 +1109,7 @@ There are as many lower bound arguments in the literature as there are variation
 There is, however, one more result which we believe deserves presentation, because of how surprising it is.
 
 {% theorem(kind="result", name="Classification of Partial Monitoring Games") %}
-**Result 2.38.**
+**Result 2.39.**
 Consider an (adversarial) partial monitoring game, with a finite class of bounded but otherwise unstructured rewards `$\mathcal{R} \subset \{r : A \to [-1,1]\}$` with `$|\mathcal{R}|<\infty$`, and assume `$\sigma$` is deterministic.
 Then its difficulty is either:
 ```
@@ -1084,7 +1123,7 @@ M(T) = \begin{cases}
 \\
 \Omega(T) &  \mathrel{\text{if it is impossible.}}
 \end{cases}
-\tag{2.44}
+\tag{2.46}
 $$
 ```
 {% end %}
@@ -1129,7 +1168,7 @@ These help ensure that an empirical benchmark suite provides useful information 
 Where possible, we will relate each best practice back to the theory seen so far, in order to contextualize it and justify the need to use it from first principles.
 
 {% theorem(kind="example", name="Black-box Optimization") %}
-**Example 2.39.**
+**Example 2.40.**
 An episodic decision problem is called a *black-box optimization problem* if:
 1. The action space is `$A = [0,1]^d$`.
 2. The reward function class `$\mathcal{R}\subseteq C(A;\mathbb{R})$` is a subset of the space of continuous functions.
@@ -1188,7 +1227,7 @@ At each time point, we compute the *normalized observations*
 ```
 $$
 \sigma_{1:t}^{(\operatorname{std})} = \frac{\sigma_{1:t} - \operatorname{mean}(\sigma_{1:t})}{\operatorname{std}(\sigma_{1:t})}
-\tag{2.45}
+\tag{2.47}
 $$
 ```
 and provide these to the model instead of the original observations, where we have assumed that computing means and standard deviations actually makes sense in the given setting.
@@ -1282,7 +1321,7 @@ For `$T\geq2$`, show that:
     $$
     R_T(p,r) \leq (1 + \log T) \max_{t=1,..,T} t\cdot r_t(p,r)
     .
-    \tag{2.46}
+    \tag{2.48}
     $$
     ```
 2. Given an algorithm `$p$`, there exists an algorithm `$p'$` for which
@@ -1290,7 +1329,7 @@ For `$T\geq2$`, show that:
     $$
     r_T(p',r) \leq \frac{1}{T-1} R_T(p,r)
     .
-    \tag{2.47}
+    \tag{2.49}
     $$
     ```
 
@@ -1354,7 +1393,7 @@ Modify the proof of [Theorem 2.23](/chapters/decision-making-under-uncertainty/#
 
 {% theorem(id="ex-bandit-lower-bound-with-gap", kind="exercise") %}
 **2.7.**
-Prove [Proposition 2.37](/chapters/decision-making-under-uncertainty/#prop-bandit-lower-bound-with-gap). *Hint:* consider first learning the proof of [Proposition 2.36](/chapters/decision-making-under-uncertainty/#prop-bandit-lower-bound), which is similar. The main difference you should expect is that the argument's core will involve the Bretagnolle--Huber inequality instead of Pinsker's inequality.
+Prove [Proposition 2.38](/chapters/decision-making-under-uncertainty/#prop-bandit-lower-bound-with-gap). *Hint:* consider first learning the proof of [Proposition 2.37](/chapters/decision-making-under-uncertainty/#prop-bandit-lower-bound), which is similar. The main difference you should expect is that the argument's core will involve the Bretagnolle--Huber inequality instead of Pinsker's inequality.
 {% end %}
 
 {{ section() }}
@@ -1409,7 +1448,7 @@ s(r,a) & a\in\Sigma
 \\
 c - i(r) & a = \boxdot
 \end{cases}
-\tag{2.48}
+\tag{2.50}
 $$
 ```
 where `$i : \mathcal{R}_q\to[0,1]$` is an arbitrary injective function, `$c<0$` is a constant, and `$s : \mathcal{R}_q\times\Sigma\to\mathbb{R}$` is a function, the latter two to be determined later.
@@ -1420,7 +1459,7 @@ Consider the set of all garbled observations
 $$
 \mathcal{G} = \{g(\sigma_1(r,\widetilde{a})) \in \mathcal{M}_1(\Sigma\mid\mathcal{R}_q) : g \in \mathcal{M}_1(\Sigma\mid\Sigma)\}
 .
-\tag{2.49}
+\tag{2.51}
 $$
 ```
 This set is convex and compact, and by definition of `$\mathcal{R}_q$` we have `$\sigma_2(\cdot ,\widetilde{a})\notin\mathcal{G}$`.
@@ -1431,7 +1470,7 @@ $$
 ,
 \quad \forall \gamma\in\mathcal{G}
 .
-\tag{2.50}
+\tag{2.52}
 $$
 ```
 Moreover, given one such function, one can always obtain another one by adding any constant-in-`$\varsigma$` function.
@@ -1448,7 +1487,7 @@ s(r,\varsigma^*_s) &= 0
 ,
 \quad \forall \varsigma\in\Sigma
 .
-\tag{2.51}
+\tag{2.53}
 \end{align}
 $$
 ```
@@ -1459,7 +1498,7 @@ We have
 $$
 \begin{align}
 V^*_{\operatorname{MDP},\sigma'_1}(s_0) &= \sup_{a_1\in A'} \underbrace{\operatorname*{\mathbb{E}}_{r'\sim q'} r'(a_1) + \operatorname*{\mathbb{E}}_{\varsigma_1\sim  \sigma'_1(r',a_1)} \sup_{a_2\in A'} \operatorname*{\mathbb{E}}(r'(a_2) \mid a_1,\varsigma_1)}_{\mathrel{\text{denote by }} (*)}
-\tag{2.52}
+\tag{2.54}
 \end{align}
 $$
 ```
@@ -1475,10 +1514,10 @@ $$
 &\sup_{a_2\in\Sigma} \operatorname*{\mathbb{E}}(s(r,a_2) \mid a_1,\varsigma_1)
 \end{aligned}
  \right)
-\tag{2.53}
+\tag{2.55}
 \\
 &\overset{\mathrel{\text{(ii)}}}{=}\sup_{a_2\in\Sigma} \operatorname*{\mathbb{E}}(s(r,a_2) \mid a_1,\varsigma_1)
-\tag{2.54}
+\tag{2.56}
 \end{align}
 $$
 ```
@@ -1491,10 +1530,10 @@ We need to handle four cases:
     $$
     \begin{align}
     (*) &= \operatorname*{\mathbb{E}}_{\substack{r'\sim q'\\\varsigma_1\sim \sigma'_1(r',a_1)}} \sup_{a_2\in\Sigma} \operatorname*{\mathbb{E}}(s(r,a_2) \mid a_1,\varsigma_1)
-    \tag{2.55}
+    \tag{2.57}
     \\
     &= \operatorname*{\mathbb{E}}_{\substack{r'\sim q'\\\varsigma_1\sim \sigma'_1(r',a_1)}}s(r,a^*_{a_1,\varsigma_1}) < \operatorname*{\mathbb{E}}_{\substack{r\sim q\\\varsigma\sim \sigma_2(r,\widetilde{a})}} s(r,\varsigma)
-    \tag{2.56}
+    \tag{2.58}
     \end{align}
     $$
     ```
@@ -1505,10 +1544,10 @@ We need to handle four cases:
     $$
     \begin{align}
     (*) &= c + \operatorname*{\mathbb{E}}_{\substack{r'\sim q'\\\varsigma_1\sim \sigma'_1(r',a_1)}} \sup_{a_2\in\Sigma} \operatorname*{\mathbb{E}}(s(r,a_2) \mid a_1,\varsigma_1)
-    \tag{2.57}
+    \tag{2.59}
     \\
     &\leq 0 = \operatorname*{\mathbb{E}}_{r\sim q} s(r,\varsigma^*_s) < \operatorname*{\mathbb{E}}_{\substack{r\sim q\\\varsigma\sim \sigma_2(r,\widetilde{a})}} s(r,\varsigma)
-    \tag{2.58}
+    \tag{2.60}
     \end{align}
     $$
     ```
@@ -1518,7 +1557,7 @@ We need to handle four cases:
     ```
     $$
     (*) \leq \operatorname*{\mathbb{E}}_{r\sim q} s(r,a_1) < \operatorname*{\mathbb{E}}_{\substack{r\sim q\\\varsigma\sim \sigma_2(r,\widetilde{a})}} s(r,\varsigma)
-    \tag{2.59}
+    \tag{2.61}
     $$
     ```
     by taking `$\gamma = \delta_{a_1}$`, which similarly lies in `$\mathcal{G}$` because it is constant in `$\varsigma_1$`.
@@ -1531,7 +1570,7 @@ Together, this proves
 $$
 V^*_{\operatorname{MDP},\sigma'_1}(s_0) < \operatorname*{\mathbb{E}}_{\substack{r\sim q\\\varsigma\sim \sigma_2(r,\widetilde{a})}} s(r,\varsigma)
 .
-\tag{2.60}
+\tag{2.62}
 $$
 ```
 We now proceed to handle the right-hand-side of this inequality: define the policy `$\pi$` to be the policy that chooses `$a_1 = \widetilde{a}$` and `$a_2 = \varsigma_1 \in A'$`, where `$\varsigma_1\sim \sigma'_2(r',a_1)$` is the observed feedback.
@@ -1539,7 +1578,7 @@ Then we have
 ```
 $$
 \operatorname*{\mathbb{E}}_{\substack{r\sim q\\\varsigma\sim \sigma_2(r,\widetilde{a})}} s(r,\varsigma) \overset{\mathrel{\text{(i)}}}{=} V^{(\pi)}_{\operatorname{MDP},\sigma'_2}(s_0) \overset{\mathrel{\text{(ii)}}}{\leq} V^*_{\operatorname{MDP},\sigma'_2}(s_0)
-\tag{2.61}
+\tag{2.63}
 $$
 ```
 where (i) follows by definitions of `$r'$` and `$V^{(\pi)}_{\operatorname{MDP},\sigma'_2}$`, and (ii) follows by optimality.
@@ -1558,7 +1597,7 @@ $$
 a_{t+1} &\sim  p_2(a_{1:t},\widetilde{\sigma}_{1:t})
 &
 \widetilde{\sigma}_\tau &\sim  g(\sigma_\tau, a_\tau)
-\tag{2.62}
+\tag{2.64}
 \end{align}
 $$
 ```
@@ -1579,7 +1618,7 @@ For this, note that by definition of `$\lambda$` we have
 $$
 \operatorname*{\mathbb{E}}_{a_{1:T} \sim  \lambda(r)} \sum_{t=1}^T r(a_t) = \sum_{t=1}^T \operatorname*{\mathbb{E}}(r(a_t) \mid r)
 .
-\tag{2.63}
+\tag{2.65}
 $$
 ```
 Taking expectations and applying the Tower Rule gives
@@ -1587,7 +1626,7 @@ Taking expectations and applying the Tower Rule gives
 $$
 \operatorname*{\mathbb{E}}_{\substack{a_{1:T} \sim  \lambda(r)\\r\sim q}} \sum_{t=1}^T r(a_t) = \operatorname*{\mathbb{E}}_{r\sim q}\sum_{t=1}^T \operatorname*{\mathbb{E}}(r(a_t) \mid r) = \operatorname*{\mathbb{E}}_{\substack{a_t\sim p\\r\sim q}}\sum_{t=1}^T r(a_t)
 .
-\tag{2.64}
+\tag{2.66}
 $$
 ```
 Taking suprema over `$\mathcal{P}$` of both sides, and using the fact that `$\Lambda$` is by definition parameterized by `$\mathcal{P}$` to rewrite the expression in terms of an equivalent supremum over `$\Lambda$`, we obtain
@@ -1595,7 +1634,7 @@ Taking suprema over `$\mathcal{P}$` of both sides, and using the fact that `$\La
 $$
 \sup_{\lambda\in\Lambda} \operatorname*{\mathbb{E}}_{\substack{a_{1:T} \sim  \lambda(r)\\r\sim q}} \sum_{t=1}^T r(a_t) = \sup_{p\in\mathcal{P}}\operatorname*{\mathbb{E}}_{\substack{a_t\sim p\\r\sim q}}\sum_{t=1}^T r(a_t) = V^*_{\operatorname{MDP}}(s_0)
 .
-\tag{2.65}
+\tag{2.67}
 $$
 ```
 Using this representation, the desired implication follows by relaxing the supremum defining `$V^*_{\operatorname{MDP},\sigma'_2}$` from `$\Lambda_{\sigma'_2}$` to `$\Lambda_{\sigma'_1}$`, obtaining `$V^*_{\operatorname{MDP},\sigma'_1}$`.
@@ -1603,14 +1642,110 @@ Part III follows.
 {% end %}
 
 {% theorem(kind="proposition") %}
-**Proposition 2.34.**
+**Proposition 2.27.**
+Consider a stochastic multi-armed bandit, with `$|A|\geq 2$`, bounded rewards `$\mathcal{R} = \{r : A \to [0,1]\}$`, and standard Gaussian noise.
+Let the Bayesian model consist of a standard Gaussian prior on the rewards, along with a conjugate unit-variance Gaussian likelihood.
+Then, if the decision rule maximizes expected value, there is an `$r\in\mathcal{R}$` for which
+```
+$$
+R_T(p_{\operatorname{EV}},r) = \Omega(T)
+.
+\tag{2.68}
+$$
+```
+{% end %}
+
+{% proof() %}
+*Proof.*
+To begin, we remind ourselves what the algorithm is doing: the posterior distribution for a given action is
+```
+$$
+r(a) \mid a_{1:t}, \sigma_{1:t} \sim\operatorname{N}\left( \frac{\sum_{\tau=1}^t \sigma_\tau\text{𝟙}_{a_\tau = a}}{N_a(t) +1}, \frac{1}{N_a(t)+1} \right)
+\tag{2.69}
+$$
+```
+where `$N_a(t)$` is the number of times action `$a$` has been played up to time `$t$`.
+We will take our true reward function to be
+```
+$$
+r(a) = \text{𝟙}_{a=1}
+.
+\tag{2.70}
+$$
+```
+Thus, the first arm is optimal and gives a reward of one, while the others give zero rewards.
+Let `$\varepsilon_t : A \to \mathbb{R}$` be the noise random variables at time `$t$`.
+To define our unlucky event, we require that two things happen:
+1. At the first time `$\tau$` when the optimal action `$a=1$` is chosen, if this occurs at all, we have `$\varepsilon_\tau(1) \leq -3$`, which makes the optimal action look very bad.
+2. For the suboptimal action `$a=2$`, the noise sum is never too-misleading, in the sense that `$\sum_{\tau=1}^t \varepsilon_\tau(2) \text{𝟙}_{a_\tau = 2} > -N_2(t)-1$` for all `$t$`.
+
+Let `$U$` be the unlucky event that both of the above conditions occur.
+Consider what the algorithm will do in this situation: the posterior expectation for the suboptimal arm, at every time `$t$`, using `$r(2) = 0$`, will be
+```
+$$
+\frac{\sum_{\tau=1}^t \sigma_\tau \text{𝟙}_{a_\tau = 2}}{N_2(t) + 1} = \frac{\sum_{\tau=1}^t \varepsilon_\tau(2) \text{𝟙}_{a_\tau = 2}}{N_2(t) + 1} > -1
+.
+\tag{2.71}
+$$
+```
+Now, consider the optimal arm, namely `$a=1$`.
+If, at time `$t$`, it has been played zero times, its posterior expectation is zero.
+If it has been played once, its posterior expectation is
+```
+$$
+\frac{\sum_{\tau=1}^t \sigma_\tau \text{𝟙}_{a_\tau = 1}}{N_1(t) + 1} \leq \frac{1 - 3}{2} = -1
+.
+\tag{2.72}
+$$
+```
+This shows that the arm `$a=1$` is never played more than once: from the algorithm's point of view, the action `$a=2$` is strictly better.
+Conditional on these events, it follows that `$\operatorname*{\mathbb{E}}(N_1(T) \mid U) \leq 1$`.
+Note also that `$\operatorname*{\mathbb{E}}(N_1(T) \mid U^\complement) \leq T$`.
+
+We now proceed to bound the probability of `$U$`.
+Note first that we can re-index the noise vectors `$\varepsilon_\tau$` to depend on `$a$` and `$N_a(t)$` instead of `$a$` and `$t$`: when modified using this re-indexing, the two events defining `$U$` depend on disjoint random variables, and are therefore independent.
+It therefore suffices to bound both probabilities individually.
+To do this, let the respective events be `$U_1$` and `$U_2$`.
+By definition, we have `$\operatorname{\mathbb{P}}(U_1) = \Phi(-3)$`, where `$\Phi$` is the Gaussian cumulative distribution function.
+For `$U_2$` we apply a basic union bound to conclude
+```
+$$
+1 - \operatorname{\mathbb{P}}(U_2) \leq \sum_{n=1}^\infty \Phi\left( -\frac{n+1}{\sqrt{n}} \right) \leq \frac{1}{2} \sum_{n=1}^\infty e^{-\frac{n+2}{2}} = \frac{1}{2e(\sqrt{e}-1)} \leq \frac{3}{10}
+\tag{2.73}
+$$
+```
+along with a Gaussian tail bound and some basic algebra.
+Now, consider how this affects regret: we have
+```
+$$
+\begin{align}
+R_T(p_{\operatorname{EV}},r) &= T - \operatorname*{\mathbb{E}} N_1(T)
+\tag{2.74}
+\\
+&= T - \operatorname*{\mathbb{E}}(N_1(T) \mid U) \operatorname{\mathbb{P}}(U) - \operatorname*{\mathbb{E}}(N_1(T) \mid U^\complement) (1 - \operatorname{\mathbb{P}}(U))
+\tag{2.75}
+\\
+&\geq T - \operatorname{\mathbb{P}}(U) - T(1-\operatorname{\mathbb{P}}(U))
+\tag{2.76}
+\\
+&= (T-1)\operatorname{\mathbb{P}}(U)
+\tag{2.77}
+\end{align}
+$$
+```
+which, since `$\operatorname{\mathbb{P}}(U) \geq \frac{7}{10}\Phi(-3)$`, is `$\Omega(T)$`.
+The claim follows.
+{% end %}
+
+{% theorem(kind="proposition") %}
+**Proposition 2.35.**
 Consider adversarial online learning under full feedback, with bounded rewards `$\mathcal{R} = \{r : A \to [-1,1]\}$` and no noise.
 Define the reward distribution `$q$` to be independent Rademacher across time and actions, namely
 ```
 $$
 r_t(a) \sim\operatorname{Rad}(\tfrac{1}{2})
 .
-\tag{2.66}
+\tag{2.78}
 $$
 ```
 Under this distribution, for any algorithm, if we suppose that `$N = |A|\geq 16$`, `$T$` is even, and `$T \geq \log N$`, then
@@ -1618,7 +1753,7 @@ Under this distribution, for any algorithm, if we suppose that `$N = |A|\geq 16$
 $$
 \frac{1}{15} \sqrt{T\log N} \leq R_T(\cdot , q)
 .
-\tag{2.67}
+\tag{2.79}
 $$
 ```
 {% end %}
@@ -1633,10 +1768,10 @@ Note first that
 $$
 \begin{align}
 R_T(p,q) &= \operatorname*{\mathbb{E}}_{r_t\sim q} R_T(p, r_1,..,r_T)
-\tag{2.68}
+\tag{2.80}
 \\
 &= \operatorname*{\mathbb{E}}_{\substack{a_t\sim p\\r_t\sim q}} \sup_{a\in A} \sum_{t=1}^T r_t(a) - r_t(a_t) = \operatorname*{\mathbb{E}}_{r_t\sim q} \sup_{a\in A} \sum_{t=1}^T r_t(a)
-\tag{2.69}
+\tag{2.81}
 \end{align}
 $$
 ```
@@ -1646,7 +1781,7 @@ We will change notation to make this explicit, by writing
 ```
 $$
 R_T(p,q) = \operatorname*{\mathbb{E}}_{r_t\sim q} \sup_{a\in A} \sum_{t=1}^T r_t(a) = \operatorname*{\mathbb{E}} \sup_{n=1,..,N} \sum_{t=1}^T \varepsilon_{n,t} = 2\operatorname*{\mathbb{E}} \sup_{n=1,..,N} b_{n,T} - T
-\tag{2.70}
+\tag{2.82}
 $$
 ```
 where `$\varepsilon_{n,t}\sim\operatorname{Rad}(\tfrac{1}{2})$` independently across `$n$` and `$t$`, which means `$\frac{\varepsilon_{n,t} + 1}{2}\sim\operatorname{Ber}(\frac{1}{2})$`, and in turn `$b_{n,T}\sim\operatorname{Bin}(T,\tfrac{1}{2})$`.
@@ -1655,16 +1790,16 @@ Continuing from above, write
 $$
 \begin{align}
 R_T(p,q) &= 2\operatorname*{\mathbb{E}} \sup_{n=1,..,N} b_{n,T} - T
-\tag{2.71}
+\tag{2.83}
 \\
 &\overset{\mathrel{\text{(i)}}}{=} 2 \sum_{u=1}^T \operatorname{\mathbb{P}}\left( \sup_{n=1,..,N} b_{n,T} \geq u \right) - T
-\tag{2.72}
+\tag{2.84}
 \\
 &= T - 2\sum_{u=1}^T \operatorname{\mathbb{P}}\left( \sup_{n=1,..,N} b_{n,T} < u \right)
-\tag{2.73}
+\tag{2.85}
 \\
 &\overset{\mathrel{\text{(ii)}}}{=} T - 2 \sum_{u=1}^T \operatorname{\mathbb{P}}(b_{1,T} < u)^N
-\tag{2.74}
+\tag{2.86}
 \end{align}
 $$
 ```
@@ -1675,10 +1810,10 @@ Write
 $$
 \begin{align}
 R_T(p,q) &= T - 2\sum_{u=1}^{T/2} \operatorname{\mathbb{P}}(b_{1,T} < u)^N - 2\sum_{u=\frac{T}{2} + 1}^T \operatorname{\mathbb{P}}(b_{1,T} < u)^N
-\tag{2.75}
+\tag{2.87}
 \\
 &\geq T - \frac{1}{2^{N-2}} \sum_{u=1}^{T/2} \operatorname{\mathbb{P}}(b_{1,T} < u) - 2\sum_{q'=1}^{T/2} \operatorname{\mathbb{P}}\left( b_{1,T} < \frac{T}{2}+q' \right)^N
-\tag{2.76}
+\tag{2.88}
 \end{align}
 $$
 ```
@@ -1689,10 +1824,10 @@ We have
 $$
 \begin{align}
 \sum_{u=1}^{T/2} \operatorname{\mathbb{P}}(b_{1,T} < u) &= \operatorname*{\mathbb{E}} \sum_{u=1}^{T/2} \text{𝟙}_{b_{1,T} < u} \overset{\mathrel{\text{(i)}}}{=} \operatorname*{\mathbb{E}} \max\left( 0, \frac{T}{2} - b_{1,T} \right)
-\tag{2.77}
+\tag{2.89}
 \\
 &\overset{\mathrel{\text{(ii)}}}{=} \frac{1}{2}\operatorname*{\mathbb{E}}\left| \frac{T}{2} - b_{1,T} \right| \overset{\mathrel{\text{(iii)}}}{\leq} \frac{\sqrt{T}}{4}
-\tag{2.78}
+\tag{2.90}
 \end{align}
 $$
 ```
@@ -1702,7 +1837,7 @@ Combining, this gives
 $$
 R_T(p,q) \geq T - \frac{\sqrt{T}}{2^{N}} - 2\sum_{q'=1}^{T/2} \operatorname{\mathbb{P}}\left( b_{1,T} < \frac{T}{2}+q' \right)^N
 .
-\tag{2.79}
+\tag{2.91}
 $$
 ```
 We are almost ready to apply the binomial tail bound, but will first simplify the sum a little bit in order to avoid getting swallowed up by needlessly complex algebra later on.
@@ -1711,13 +1846,13 @@ For this, write
 $$
 \begin{align}
 R_T(p,q) &\overset{\mathrel{\text{(i)}}}{\geq} T - \frac{\sqrt{T}}{2^N} - 2 q_0 \operatorname{\mathbb{P}}\left( b_{1,T} < \frac{T}{2}+q_0 \right)^N - 2 \left( \frac{T}{2} - q_0 \right)
-\tag{2.80}
+\tag{2.92}
 \\
 &= 2q_0 \left( 1 - \left( 1 - \operatorname{\mathbb{P}}\left( b_{1,T} \geq \frac{T}{2}+q_0 \right) \right)^N \right) - \frac{\sqrt{T}}{2^N}
-\tag{2.81}
+\tag{2.93}
 \\
 &\overset{\mathrel{\text{(ii)}}}{\geq} 2q_0 \left( 1 - \exp\left( -N\operatorname{\mathbb{P}}\left( b_{1,T} \geq \frac{T}{2}+q_0 \right) \right) \right) - \frac{\sqrt{T}}{2^N}
-\tag{2.82}
+\tag{2.94}
 \end{align}
 $$
 ```
@@ -1727,10 +1862,10 @@ We now apply the tail bound of {% cite(keys=["orabona26"], n=[2]) %}Orabona (202
 $$
 \begin{align}
 \operatorname{\mathbb{P}}\left( b_{1,T} \geq \frac{T}{2} + q_0 \right) &\geq \frac{1}{3} \cdot \frac{1}{\frac{2q_0}{\sqrt{T}} + 1} \exp\left( -T D_{\operatorname{KL}}\left( \operatorname{Ber}\left( \frac{1}{2} + \frac{q_0}{T} \right) \mid\mid \operatorname{Ber}\left( \frac{1}{2} \right) \right) \right)
-\tag{2.83}
+\tag{2.95}
 \\
 &\geq \frac{1}{3} \cdot \frac{1}{\frac{2q_0}{\sqrt{T}} + 1} \exp\left( -2\frac{q_0^2}{T} - 3.1\frac{q_0^4}{T^3} \right)
-\tag{2.84}
+\tag{2.96}
 \end{align}
 $$
 ```
@@ -1740,7 +1875,7 @@ Continuing the algebra, we get
 $$
 R_T(p,q) \geq 2q_0 \left( 1 - \exp\left( -\frac{N}{3} \cdot \frac{1}{\frac{2q_0}{\sqrt{T}} + 1} \exp\left( -2\frac{q_0^2}{T} - 3.1\frac{q_0^4}{T^3} \right) \right) \right) - \frac{\sqrt{T}}{2^N}
 .
-\tag{2.85}
+\tag{2.97}
 $$
 ```
 We now choose
@@ -1748,21 +1883,21 @@ We now choose
 $$
 q_0 = \left\lfloor \sqrt{\frac{T\log N}{8}} \right\rfloor
 .
-\tag{2.86}
+\tag{2.98}
 $$
 ```
 The conditions `$N\geq 16$` and `$T \geq \log N$` imply a uniform bound on the exponential term, and after some algebra, we obtain
 ```
 $$
 R_T(p,q) \geq \frac{13}{20}\left( \sqrt{\frac{T\log N}{2}} - 2 \right) - \frac{1}{10^5} \sqrt{T\log N} \geq \frac{1}{15}\sqrt{T\log N}
-\tag{2.87}
+\tag{2.99}
 $$
 ```
 which gives the claim.
 {% end %}
 
 {% theorem(kind="proposition") %}
-**Proposition 2.35.**
+**Proposition 2.36.**
 Consider stochastic online learning under full feedback, with bounded rewards `$\mathcal{R} = \{r : A \to [0,1]\}$` and standard Gaussian noise.
 Define the reward distribution `$q$` according to
 ```
@@ -1772,7 +1907,7 @@ r(a) &= \Delta \text{𝟙}_{a=\alpha}
 &
 \alpha &\sim\operatorname{U}(A)
 .
-\tag{2.88}
+\tag{2.100}
 \end{align}
 $$
 ```
@@ -1781,7 +1916,7 @@ Under this distribution, for any algorithm, if we suppose that `$N = |A|\geq 16$
 $$
 \frac{1}{4}\sqrt{T\log N} \leq R_T(\cdot , q)
 .
-\tag{2.89}
+\tag{2.101}
 $$
 ```
 {% end %}
@@ -1796,7 +1931,7 @@ Since these are Gaussian, with the same diagonal covariance but different means,
 $$
 D_{\operatorname{KL}}(q_{\sigma_t \mid \alpha_1} \mid\mid q_{\sigma_t \mid \alpha_2}) = \frac{\left\| \Delta(\text{𝟙}_{\cdot =\alpha_1} - \text{𝟙}_{\cdot =\alpha_2}) \right\|^2}{2\varsigma ^2} = \frac{\Delta^2}{\varsigma^2}
 .
-\tag{2.90}
+\tag{2.102}
 $$
 ```
 Since `$\sigma_{1:T}$` are independent across time, this means
@@ -1804,14 +1939,14 @@ Since `$\sigma_{1:T}$` are independent across time, this means
 $$
 D_{\operatorname{KL}}(q_{\sigma_{1:T} \mid \alpha_1} \mid\mid q_{\sigma_{1:T} \mid \alpha_2}) = \frac{T\Delta^2}{\varsigma^2}
 .
-\tag{2.91}
+\tag{2.103}
 $$
 ```
 Next, we pass to the mutual information, by writing
 ```
 $$
 I(\alpha; a_t) \overset{\mathrel{\text{(i)}}}{\leq} I(\alpha; \sigma_{1:T}) \overset{\mathrel{\text{(ii)}}}{\leq} \frac{1}{N^2} \sum_{\alpha_1,\alpha_2\in A} D_{\operatorname{KL}}(q_{\sigma_{1:T} \mid \alpha_1} \mid\mid q_{\sigma_{1:T} \mid \alpha_2}) \overset{\mathrel{\text{(iii)}}}{\leq} \frac{T\Delta^2}{\varsigma^2}
-\tag{2.92}
+\tag{2.104}
 $$
 ```
 where (i) follows from the data processing inequality in two steps, namely by applying `$I(\alpha; a_t) \leq I(\alpha; \sigma_{1:t}) \leq I(\alpha; \sigma_{1:T})$`, (ii) uses the fact that `$\alpha$` is uniform in order to apply the mixture bound on mutual information---one can prove this by writing out the mutual information explicitly, conditioning the right-hand-side variables on the left-hand-side variables, and applying Jensen's inequality, and (iii) applies the inequality `$0 < T\Delta^2$` for the diagonal terms in the sum, and is an equality for off-diagonal terms.
@@ -1821,7 +1956,7 @@ Now, we apply the mutual information form of Fano's inequality for uniform `$\al
 $$
 \operatorname{\mathbb{P}}(a_t \neq \alpha) \geq 1 - \frac{I(\alpha; a_t) + \log 2}{\log N}
 .
-\tag{2.93}
+\tag{2.105}
 $$
 ```
 The condition `$N\geq 16$` together with the tuned value of `$\Delta = \varsigma\sqrt{\frac{\log N}{4T}}$`, along with the preceding mutual information bound, imply that
@@ -1829,7 +1964,7 @@ The condition `$N\geq 16$` together with the tuned value of `$\Delta = \varsigma
 $$
 \operatorname{\mathbb{P}}(a_t \neq \alpha) \geq \frac{1}{2}
 .
-\tag{2.94}
+\tag{2.106}
 $$
 ```
 With this probability, each action incurs regret `$\Delta$`.
@@ -1838,14 +1973,14 @@ For the tuned value, we get
 $$
 R_T(p,q) = \sum_{t=1}^T \Delta \operatorname{\mathbb{P}}(a_t\neq\alpha) \geq \frac{\Delta T}{2} = \frac{\varsigma}{4}\sqrt{T \log N}
 .
-\tag{2.95}
+\tag{2.107}
 $$
 ```
 The claim follows by setting `$\varsigma^2=1$`.
 {% end %}
 
 {% theorem(id="prop-bandit-lower-bound-restate", kind="proposition") %}
-**Proposition 2.36.**
+**Proposition 2.37.**
 Consider a stochastic multi-armed bandit, with bounded rewards `$\mathcal{R} = \{r : A \to [0,1]\}$` and standard Gaussian noise.
 Define the reward distribution `$q$` according to
 ```
@@ -1855,7 +1990,7 @@ r(a) &= \Delta \text{𝟙}_{a=\alpha}
 &
 \alpha &\sim\operatorname{U}(A)
 .
-\tag{2.96}
+\tag{2.108}
 \end{align}
 $$
 ```
@@ -1864,7 +1999,7 @@ Under this distribution, for any algorithm, if we suppose that `$K = |A| \geq 2$
 $$
 \frac{1}{8}\sqrt{KT} \leq R_T(\cdot , q)
 .
-\tag{2.97}
+\tag{2.109}
 $$
 ```
 {% end %}
@@ -1879,7 +2014,7 @@ Thus
 ```
 $$
 R_T(\cdot , q) = \Delta (T - \operatorname*{\mathbb{E}} n_\alpha(T))
-\tag{2.98}
+\tag{2.110}
 $$
 ```
 by the Tower Rule, where the expectation is taken only over `$\alpha \sim\operatorname{U}(A)$`, and all other randomness is contained inside the definition of `$n_\alpha$`.
@@ -1893,7 +2028,7 @@ For a given action at a given time, we have
 $$
 D_{\operatorname{KL}}(q_{\sigma_t \mid a_t, 0} \mid\mid q_{\sigma_t \mid a_t, \alpha}) = \frac{\Delta^2}{2\varsigma^2}\text{𝟙}_{a_t=\alpha}
 .
-\tag{2.99}
+\tag{2.111}
 $$
 ```
 By the chain rule for KL divergences, and using the fact that actions only depend on `$\alpha$` through the history, we have
@@ -1902,16 +2037,16 @@ $$
 \begin{align}
 &\hspace{-2em}
 D_{\operatorname{KL}}(q_{\sigma_{1:T},a_{1:T} \mid 0} \mid\mid q_{\sigma_{1:T},a_{1:T} \mid \alpha})
-\tag{2.100}
+\tag{2.112}
 \\
 &= \operatorname*{\mathbb{E}}\sum_{t=1}^T D_{\operatorname{KL}}(q_{\sigma_t,a_t \mid \sigma_{1:t-1},a_{1:t-1},0} \mid\mid q_{\sigma_t,a_t \mid \sigma_{1:t-1},a_{1:t-1},\alpha})
-\tag{2.101}
+\tag{2.113}
 \\
 &= \operatorname*{\mathbb{E}}\sum_{t=1}^T D_{\operatorname{KL}}(q_{\sigma_t \mid \sigma_{1:t-1},a_{1:t},0} \mid\mid q_{\sigma_t \mid \sigma_{1:t-1},a_{1:t},\alpha})
-\tag{2.102}
+\tag{2.114}
 \\
 &= \frac{\Delta^2}{2\varsigma^2}\operatorname*{\mathbb{E}} m_\alpha(T)
-\tag{2.103}
+\tag{2.115}
 \end{align}
 $$
 ```
@@ -1921,13 +2056,13 @@ By Pinsker's inequality, we obtain
 $$
 \begin{align}
 \operatorname*{\mathbb{E}} n_\alpha(T) - \operatorname*{\mathbb{E}} m_\alpha(T) &\leq \left| \operatorname*{\mathbb{E}} n_\alpha(T) - \operatorname*{\mathbb{E}} m_\alpha(T) \right|
-\tag{2.104}
+\tag{2.116}
 \\
 &\leq T\sqrt{\frac{1}{2} D_{\operatorname{KL}}(q_{\sigma_{1:T},a_{1:T} \mid 0} \mid\mid q_{\sigma_{1:T},a_{1:T} \mid \alpha}) }
-\tag{2.105}
+\tag{2.117}
 \\
 &= \frac{T\Delta}{2\varsigma}\sqrt{\operatorname*{\mathbb{E}} m_\alpha(T)}
-\tag{2.106}
+\tag{2.118}
 \end{align}
 $$
 ```
@@ -1937,13 +2072,13 @@ Summing over `$\alpha$` then gives
 $$
 \begin{align}
 \sum_{\alpha\in A} \operatorname*{\mathbb{E}} n_\alpha(T) &\overset{\mathrel{\text{(i)}}}{\leq} \sum_{\alpha\in A} \operatorname*{\mathbb{E}} m_\alpha(T) + \frac{T\Delta}{2\varsigma}\sum_{\alpha\in A} \sqrt{\operatorname*{\mathbb{E}} m_\alpha(T)}
-\tag{2.107}
+\tag{2.119}
 \\
 &\overset{\mathrel{\text{(ii)}}}{\leq} T + \frac{T\Delta}{2\varsigma}\sqrt{K\sum_{\alpha\in A} \operatorname*{\mathbb{E}} m_\alpha(T)}
-\tag{2.108}
+\tag{2.120}
 \\
 &\overset{\mathrel{\text{(iii)}}}{=} T + \frac{T\Delta\sqrt{KT}}{2\varsigma}
-\tag{2.109}
+\tag{2.121}
 \end{align}
 $$
 ```
@@ -1954,7 +2089,7 @@ Combining with the preceding bound gives
 $$
 R_T(\cdot , q) \geq \Delta T\left( 1 - \frac{1}{K} \right) - \frac{\Delta^2 T^{3/2}}{2\varsigma\sqrt{K}}
 .
-\tag{2.110}
+\tag{2.122}
 $$
 ```
 Using `$K \geq 2$` to bound `$1 - \frac{1}{K} \geq 1/2$`, and plugging in the tuned value `$\Delta = \frac{\varsigma}{2}\sqrt{\frac{K}{T}}$` gives the result
@@ -1962,18 +2097,18 @@ Using `$K \geq 2$` to bound `$1 - \frac{1}{K} \geq 1/2$`, and plugging in the tu
 $$
 R_T(\cdot , q) \geq \frac{\varsigma\sqrt{KT}}{4} - \frac{\varsigma\sqrt{KT}}{8} = \frac{\varsigma}{8}\sqrt{KT}
 .
-\tag{2.111}
+\tag{2.123}
 $$
 ```
 {% end %}
 
 {% theorem(id="prop-bandit-lower-bound-with-gap-restate", kind="proposition") %}
-**Proposition 2.37.**
+**Proposition 2.38.**
 Consider a stochastic multi-armed bandit, where the rewards are bounded with a gap, namely
 ```
 $$
 \mathcal{R} = \{r : A \to [0,1] : r(a^*) - r(a) \geq \Delta, \forall a \neq a^*\}
-\tag{2.112}
+\tag{2.124}
 $$
 ```
 where `$a^* = \operatorname*{\arg\max}_{a\in A} r(a)$`, we assume `$0 < \Delta \leq \frac{1}{2}$`, and the noise is standard Gaussian.
@@ -1992,7 +2127,7 @@ r(a) &= \Delta \text{𝟙}_{a=\alpha_1} + 2\beta\Delta \text{𝟙}_{a=\alpha_2}
 &
 \beta &\sim\operatorname{Ber}(\tfrac{1}{2})
 .
-\tag{2.113}
+\tag{2.125}
 \end{align}
 $$
 ```
@@ -2001,7 +2136,7 @@ Under this distribution, for any algorithm, if we suppose that `$K = |A| \geq 2$
 $$
 \frac{(K-1)\log T}{16\Delta} \leq R_T(\cdot , q)
 .
-\tag{2.114}
+\tag{2.126}
 $$
 ```
 {% end %}

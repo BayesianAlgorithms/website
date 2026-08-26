@@ -4,7 +4,7 @@ description = "We introduce *optimistic algorithms* for episodic decision proble
 slug = "optimism"
 weight = 7
 [extra]
-page = 65
+page = 67
 +++
 
 # Optimism

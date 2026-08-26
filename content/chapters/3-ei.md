@@ -4,7 +4,7 @@ description = "We derive the class of *improvement-based algorithms* from first 
 slug = "expected-improvement"
 weight = 5
 [extra]
-page = 61
+page = 63
 +++
 
 # Expected Improvement

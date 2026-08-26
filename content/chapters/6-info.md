@@ -4,7 +4,7 @@ description = "We outline the class of *entropy search algorithms*, which are co
 slug = "information-theoretic-algorithms"
 weight = 8
 [extra]
-page = 67
+page = 69
 +++
 
 # Information-theoretic Algorithms
