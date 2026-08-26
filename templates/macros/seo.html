@@ -20,11 +20,13 @@
     <meta property="og:image:width" content="{{ card_metadata.width }}">
     <meta property="og:image:height" content="{{ card_metadata.height }}">
     <meta property="og:image:type" content="image/png">
+    <meta property="og:image:alt" content="{{ config.title }}">
 {% endif %}
 <meta property="og:type" content="{{ og_type }}">
 <meta name="twitter:card" content="{% if card_metadata %}summary_large_image{% else %}summary{% endif %}">
 {% if card_metadata %}
     <meta name="twitter:image" content="{{ card_url | safe }}">
+    <meta name="twitter:image:alt" content="{{ config.title }}">
 {% endif %}
 <meta name="twitter:title" content="{{ page.title | default(value = config.title) }}">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"{{ ld_json_type }}","author":{"@type":"Person","name":"{{ config.author }}"},{% if page.description %}"description":{{ description | json_encode | safe }},{% endif %}"headline":"{{ page.title | default(value = config.title) }}",{% if card_metadata %}"image":"{{ card_url | safe }}",{% endif %}{{ ld_json_extra | safe }}"url":"{{ url | safe }}"}</script>
