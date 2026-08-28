@@ -30,10 +30,27 @@ changes make it possible without workarounds.
 <ol>
     {% for chapter in chapters.pages %}
         {% set number = chapter.relative_path | split(pat = "/") | last | split(pat = "-") | first | int(default = 0) %}
-        <li class="my-4{% if number == 0 %} list-unstyled{% endif %}" {% if number > 0 %}value="{{ number }}"{% endif %}>
+        <li class="my-4 pl-2{% if number == 0 %} list-unstyled{% endif %}" {% if number > 0 %}value="{{ number }}"{% endif %}>
             <h2 class="h4 mt-0 mb-1">
                 <a href="{{ chapter.path | safe }}">{{ chapter.title }}</a>
             </h2>
+            {% if chapter.toc %}
+                {% set_global sections = chapter.toc | first | get(key = "children") %}
+            {% else %}
+                {% set_global sections = [] %}
+            {% endif %}
+            {% if sections and number > 0 %}
+                <details>
+                    <summary class="n:icon" aria-label="Sections of {{ chapter.title }}"></summary>
+                    <ol class="mb-2 pl-0">
+                        {% for section in sections %}
+                            {% if section.id != "references" and section.id != "footnotes" %}
+                                <li class="my-0"><a href="{{ chapter.path | safe }}#{{ section.id }}">{{ section.title | regex_replace(pattern = '^[0-9A-Z][0-9A-Z.]*\.\s+', rep = '') }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ol>
+                </details>
+            {% endif %}
             {% if config.extra.pdf %}
                 <div class="btn-group" role="group" aria-label="Formats">
                     <a class="btn" href="{{ chapter.path | safe }}">HTML</a>

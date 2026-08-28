@@ -189,21 +189,58 @@ a:hover {
 
 .i\:content {
     ol li {
-        padding-left: 0.5rem;
         position: relative;
+        text-align: left;
         &::marker {
             color: var(--color-secondary);
         }
-        & h2 {
-            padding-right: 7rem;
+        h2 {
+            padding-right: 7.75rem;
+            a {
+                anchor-name: --toc-title;
+            }
         }
-        & .btn-group {
+        .btn-group {
             position: absolute;
             top: 0;
             right: 0;
         }
-        & .btn {
+        .btn {
             padding-bottom: 0;
+        }
+        > details > summary {
+            position: absolute;
+            position-anchor: --toc-title;
+            align-self: anchor-center;
+            left: calc(anchor(right) + 0.375em);
+            cursor: pointer;
+            color: var(--color-secondary);
+            list-style: none;
+            &::-webkit-details-marker {
+                display: none;
+            }
+            &::before {
+                width: 0.6875em !important;
+                height: 0.6875em !important;
+            }
+        }
+        > details[open] > summary::before {
+            transform: rotate(90deg);
+        }
+        > details > ol {
+            list-style: none;
+            > li {
+                padding-left: 2rem;
+                text-wrap: pretty;
+            }
+            > li::before {
+                content: counters(list-item, ".") ".";
+                display: inline-block;
+                width: 2rem;
+                margin-left: -2rem;
+                color: var(--color-secondary);
+                font-size: 0.875rem;
+            }
         }
     }
     ul li {

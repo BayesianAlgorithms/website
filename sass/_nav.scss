@@ -79,7 +79,7 @@
     &::-webkit-scrollbar {
         display: none;
     }
-    & ol {
+    ol {
         hyphens: auto;
         text-wrap: pretty;
     }
@@ -99,7 +99,10 @@
         display: none;
     }
 }
-.n\:menu li > details > summary::before {
+.n\:menu li > details[open] > summary::before {
+    transform: rotate(90deg);
+}
+.n\:icon::before {
     content: "";
     display: inline-block;
     width: 0.625em;
@@ -110,9 +113,6 @@
     mask-position: center;
     mask-repeat: no-repeat;
     mask-size: contain;
-}
-.n\:menu li > details[open] > summary::before {
-    transform: rotate(90deg);
 }
 
 

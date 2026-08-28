@@ -48,7 +48,7 @@
                         {% endif %}
                         {% if sections and chapter_number > 0 %}
                             <details {% if current %} open{% endif %}>
-                                <summary aria-label="Sections of {{ chapter.title }}"></summary>
+                                <summary class="n:icon" aria-label="Sections of {{ chapter.title }}"></summary>
                                 <ol class="list-unstyled mb-0 pl-3">
                                     {% for section in sections %}
                                         {% if section.id != "references" and section.id != "footnotes" %}
