@@ -195,12 +195,14 @@ a:hover {
             color: var(--color-secondary);
         }
         & h2 {
-            padding-right: 3rem;
+            padding-right: 7rem;
         }
-        & .btn {
+        & .btn-group {
             position: absolute;
             top: 0;
             right: 0;
+        }
+        & .btn {
             padding-bottom: 0;
         }
     }

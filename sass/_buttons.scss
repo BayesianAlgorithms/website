@@ -22,3 +22,23 @@
     border-color: var(--color-primary);
     text-decoration: none;
 }
+.btn-group {
+    display: inline-flex;
+    vertical-align: middle;
+    > .btn {
+        position: relative;
+        flex: 1 1 auto;
+        &:hover {
+            z-index: 1;
+        }
+        &:not(:first-child) {
+            margin-left: -1px;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+        &:not(:last-child) {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+    }
+}
