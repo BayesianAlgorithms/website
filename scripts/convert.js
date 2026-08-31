@@ -331,9 +331,7 @@ const BLOCK_RULES = [
 
     // \parmarginnote on its own line is a margin note aligned with the top
     // of the paragraph that follows, positioned statically like a theorem
-    // name rather than anchored like an inline \marginnote, so it is
-    // queued before that paragraph's first line under its own shortcode,
-    // which keeps it out of the anchored notes' numbering
+    // name, so it is queued before that paragraph's first line
     ['document', /^\\parmarginnote\{(.*)\}$/,
         (m, s) => s.add({t: 'marginnote', text: m[1], no: s.lineNo})],
 
@@ -405,13 +403,8 @@ function inline(line, e) {
     let i;
     while ((i = line.indexOf('\\footnote{')) !== -1) {
         const close = matchBrace(line, i + 9, e);
-        e.footnotes.push([`[^${++e.fn}]: ${inline(line.substring(i + 10, close), e)}`]);
-        line = line.slice(0, i) + `[^${e.fn}]` + line.slice(close + 1);
-    }
-    while ((i = line.indexOf('\\marginnote{')) !== -1) {
-        const close = matchBrace(line, i + 11, e);
-        e.notes.push(['{% marginnote() %}', inline(line.substring(i + 12, close), e), '{% end %}']);
-        line = line.slice(0, i) + line.slice(close + 1);
+        e.footnotes.push(['{% footnote() %}', inline(line.substring(i + 10, close), e), '{% end %}']);
+        line = line.slice(0, i) + '{{ footnote_ref() }}' + line.slice(close + 1);
     }
     line = line.replace(/\\[cC]ref\{([^}]*)\}/g, (m0, keys) => keys.split(',').map(key => {
         const label = labels[key.trim()];
@@ -656,11 +649,12 @@ function collect(states) {
 // Flushes the notes queued by inline() at the current paragraph break:
 // margin notes are spliced in before the paragraph that produced them, so
 // that their static position aligns them with its top, while footnote
-// definitions are appended after it.
+// asides are appended after it.
 function flushPending(e) {
     const spliced = e.notes.flatMap(block => [...block, '']);
     e.out.splice(e.paraStart ?? e.out.length, 0, ...spliced);
     for (const block of e.footnotes) {
+        e.blank();
         e.emit(...block);
         e.blank();
     }
@@ -790,7 +784,6 @@ function emitFile(s) {
         chapter: s.chapter,
         lineNo: 0,
         eq: 0,
-        fn: 0,
         notes: [],
         footnotes: [],
         paraStart: null,
@@ -810,9 +803,8 @@ function emitFile(s) {
         const keys = [...e.cited.keys()].sort((a, b) => bib[a].authors[0].localeCompare(bib[b].authors[0]));
         e.emit('{{ section() }}', '', '## References', '', `{{ references(bibfile="${bibfile}", keys=[${keys.map(k => `"${k}"`).join(', ')}], counts=[${keys.map(k => e.cited.get(k)).join(', ')}]) }}`);
     }
-    if (e.fn > 5) throw new Error(`${s.file}: ${e.fn} footnotes exceed the $footnote-count anchor rules in _variables.scss`);
-    const mn = e.out.filter(l => l.includes('{% marginnote() %}')).length;
-    if (mn > 5) throw new Error(`${s.file}: ${mn} margin notes exceed the $marginnote-count anchor rules in _variables.scss`);
+    const fn = e.out.filter(l => l.includes('{% footnote() %}')).length;
+    if (fn > 5) throw new Error(`${s.file}: ${fn} footnotes exceed the $footnote-count hover rules in _sidenotes.scss`);
     const page = pages.get(s.title);
     if (page === undefined) throw new Error(`${s.file}: chapter "${s.title}" not found in ${pagesfile}, which may be stale`);
     const frontMatter = [

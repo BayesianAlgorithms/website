@@ -12,7 +12,6 @@ minify_html = true
 highlighting.light_theme = "github-light"
 highlighting.dark_theme = "github-dark"
 smart_punctuation = true
-bottom_footnotes = true
 
 [extra]
 server_side_katex = true

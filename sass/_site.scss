@@ -108,6 +108,91 @@ a:hover {
     }
 }
 
+.marginnote {
+    display: none;
+    hyphens: none;
+}
+
+.footnote-reference {
+    position: relative;
+    &::after {
+        content: "";
+        height: 1rem;
+        width: 2rem;
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        translate: -50% 0;
+        pointer-events: none;
+    }
+    &:hover::after {
+        pointer-events: auto;
+    }
+    > label {
+        color: var(--color-primary);
+        cursor: pointer;
+    }
+    > input {
+        appearance: none;
+        height: 0.5rem;
+        width: 0.5rem;
+        position: absolute;
+        top: calc(100% + 0.15625rem);
+        left: 50%;
+        translate: -50% 0;
+        rotate: 45deg;
+        z-index: 11;
+        margin: 0;
+        background-color: var(--color-light);
+        border-top: 1px solid color-mix(in srgb, var(--color-secondary), var(--color-white) 75%);
+        border-left: 1px solid color-mix(in srgb, var(--color-secondary), var(--color-white) 75%);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.15s ease-in-out;
+        @media (prefers-reduced-motion: reduce) {
+            transition: none !important;
+        }
+    }
+}
+.footnote {
+    width: fit-content;
+    max-width: min($text-width, calc(100vw - 2rem));
+    position: absolute;
+    top: calc(anchor(bottom) + 0.4375rem);
+    left: calc((100% - 100vw) / 2 + $container-padding);
+    right: calc((100% - 100vw) / 2 + $container-padding);
+    justify-self: anchor-center;
+    z-index: 10;
+    margin: 0;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    text-align: justify;
+    background-color: var(--color-light);
+    border: 1px solid color-mix(in srgb, var(--color-secondary), var(--color-white) 75%);
+    border-radius: 0.25rem;
+    box-shadow: 0 0.25rem 0.75rem color-mix(in srgb, var(--color-black), transparent 85%);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease-in-out, visibility 0s linear 0.15s;
+    @media (prefers-reduced-motion: reduce) {
+        transition: none !important;
+    }
+}
+@for $i from 1 through $footnote-count {
+    label[for="fr-#{$i}"] {
+        anchor-name: --fr-#{$i};
+    }
+    #fn-#{$i} {
+        position-anchor: --fr-#{$i};
+    }
+    .c\:content:has(.footnote-reference:hover > #fr-#{$i}, #fr-#{$i}:checked, #fr-#{$i}:focus-visible, #fn-#{$i}:hover) :is(#fr-#{$i}, #fn-#{$i}) {
+        visibility: visible;
+        opacity: 1;
+        pointer-events: auto;
+        transition-delay: 0s;
+    }
+}
+
 .i\:container > * {
     max-width: calc($text-width + 3rem);
     margin-left: auto;

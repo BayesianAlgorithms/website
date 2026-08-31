@@ -73,11 +73,7 @@
             {% endif %}
             {% set has_sections = page.content is containing('<section>') or page.content is containing('<section id=') %}
             {% if has_sections %}{% set closer = '</section>' %}{% else %}{% set closer = '' %}{% endif %}
-            {% if page.content is containing('<section class="footnotes">') %}
-                {{ page.content | replace(from='<section class="footnotes">', to=closer ~ '<section class="footnotes"><h2 id="footnotes"><a aria-label="Anchor link for: {{ id }}" href="#footnotes">Footnotes</a></h2>') | safe }}
-            {% else %}
-                {{ page.content ~ closer | safe }}
-            {% endif %}
+            {{ page.content ~ closer | safe }}
         </article>
 
         <nav class="n:buttons" aria-label="Adjacent chapters">

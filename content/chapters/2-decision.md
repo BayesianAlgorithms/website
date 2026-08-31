@@ -43,13 +43,17 @@ An *episodic decision problem* is defined by the following:
 
 The idea behind this definition---whose non-episodic form, as well as naming, dates at least to {% cite(keys=["blackwell51", "blackwell53"], n=[1, 1]) %}Blackwell (1951, 1953){% end %}---is to formalize a decision-making process that proceeds over *episodes*, indexed by discrete time points `$t\in\mathbb{N}$`.
 Assuming for sake of introduction that we are considering the stochastic variant, this process takes place as follows:
-1. At time `$t$`, a thinking robot, called the *learner*, chooses an action `$a_t\in A$`.
+1. At time `$t$`, a thinking robot,{{ footnote_ref() }} called the *learner*, chooses an action `$a_t\in A$`.
 2. The learner receives a reward `$r(a_t)$`, but does not observe this reward.
 3. Instead, the learner observes the random feedback `$\sigma_t \sim  \sigma(r, a_t)$`.
 
 At the next time point `$t+1$`, the learner may then select a new, potentially random, action `$a_{t+1}$`, based on `$\mathcal{R}$`, as well as `$a_1,..,a_t$` and `$\sigma_1,..,\sigma_t$`, for which we use the shorthand `$a_{1:t}$`, `$\sigma_{1:t}$`.
 Thus, the learner knows the *reward class*, the *actions it chose*, and the *history of observations*, but not the true reward function itself.
 In fact, it is precisely this lack of knowledge that formalizes the sense in which the learner is making decisions under *uncertainty*.
+
+{% footnote() %}
+In his seminal work on the foundations of Bayesian probability, {% cite(keys=["jaynes03"], n=[1]) %}Jaynes (2003){% end %} famously introduced the metaphor of a thinking robot, and used it to illustrate how conditional probability can be seen as an extension of Boolean logic which incorporates uncertainty---leading to the framework we call *Bayesian learning*. We conceptualize our thinking robot similarly, but will instead study how it should *resolve* its uncertainty in order to act---in particular, we will want to know how often the robot chooses the right actions, even if its internal model of the world differs from reality. As we proceed, more and more of the moving parts that make up this perspective will be made precise.
+{% end %}
 
 This defines the protocol according to which the learner interacts.
 It is not the most general form possible---in particular, it excludes adaptive adversaries that react to the learner's actions, which we will consider in [Chapter 7](/chapters/thompson-sampling/)---but we believe it achieves a good balance between being general yet not-too-difficult to define.
@@ -164,9 +168,11 @@ An episodic decision problem is said to be a *partial monitoring game* if:
 
 The stochastic and Bayesian variants are also known as *stochastic partial monitoring games* and *Bayesian partial monitoring games*, respectively.
 This is somewhat of a misnomer, particularly for the Bayesian variant, which corresponds to a stochastic control problem rather than a bona-fide game with more than one player.
-This is one motivation behind our choice of the name *episodic decision problem*,[^1] following {% cite(keys=["blackwell51", "blackwell53"], n=[2, 2]) %}Blackwell (1951, 1953){% end %}, to describe the general case.
+This is one motivation behind our choice of the name *episodic decision problem*,{{ footnote_ref() }} following {% cite(keys=["blackwell51", "blackwell53"], n=[2, 2]) %}Blackwell (1951, 1953){% end %}, to describe the general case.
 
-[^1]: This name should also never be confused with the notion of a *decision problem* in the sense of Turing machines or decidability, which is completely unrelated and will never arise in this book.
+{% footnote() %}
+This name should also never be confused with the notion of a *decision problem* in the sense of Turing machines or decidability, which is completely unrelated and will never arise in this book.
+{% end %}
 
 A remarkable fact about this problem class is that, in a sense we will soon precisely define, there are only four possible problem difficulties: *trivially easy*, *bandit-like*, *harder-than-bandit*, and *impossible*.
 This is in spite of the fact that---except for finiteness of `$A$`, `$\Sigma$`, and `$\mathcal{R}$`---the class is completely general!
@@ -2150,4 +2156,4 @@ $$
 
 ## References
 
-{{ references(bibfile="static/md/BDMA.bib", keys=["blackwell51", "blackwell53", "deoliveira18", "foster23", "garnett23", "hardt26", "higham96", "lecam86", "negrea21", "orabona26", "orabona15", "rasmussen06"], counts=[2, 2, 1, 1, 1, 1, 1, 1, 1, 3, 1, 1]) }}
+{{ references(bibfile="static/md/BDMA.bib", keys=["blackwell51", "blackwell53", "deoliveira18", "foster23", "garnett23", "hardt26", "higham96", "jaynes03", "lecam86", "negrea21", "orabona26", "orabona15", "rasmussen06"], counts=[2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 1]) }}

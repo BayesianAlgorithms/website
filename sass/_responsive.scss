@@ -9,30 +9,19 @@
         > header {
             margin-top: 0;
         }
-        .marginnote p, .footnotes-list p {
+        .marginnote p {
             text-align: left;
         }
     }
     .marginnote {
-        display: block;
-    }
-    .marginnote, .footnotes-list > li {
+        display: block !important;
         position: absolute;
         left: calc(100% + $note-sep);
         width: $note-width;
     }
-    .footnotes > h2 {
-        display: none;
-    }
-    .footnotes-list {
-        margin: 0;
-        a[href^="#fr-"] {
-            display: none;
-        }
-    }
-    .footnotes-list > li {
-        margin-top: 0 !important;
-        margin-bottom: 0 !important;
+    .footnote {
+        left: calc((100% - 100vw + $note-sep + $note-width) / 2 + $container-padding) !important;
+        right: calc((100% - 100vw - $note-sep - $note-width) / 2 + $container-padding) !important;
     }
 }
 
@@ -46,6 +35,7 @@
     .n\:menu {
         grid-column: 1 !important;
         position: sticky;
+        z-index: auto;
         top: 0;
         left: auto;
         max-height: 100vh;
@@ -66,5 +56,9 @@
     }
     .n\:menu > ol {
         padding: 0.5rem 0 0.5rem $container-padding;
+    }
+    .footnote {
+        left: calc((100% - 100vw) / 2 + $container-padding) !important;
+        right: calc((100% - 100vw) / 2 + $container-padding) !important;
     }
 }
