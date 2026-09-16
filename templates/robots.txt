@@ -1,0 +1,5 @@
+User-agent: *
+Disallow:
+Allow: /
+Sitemap: {{ get_url(path = 'sitemap.xml') }}
+Content-Signal: ai-train=yes, search=yes, ai-input=yes
