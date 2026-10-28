@@ -1,0 +1,10 @@
+{% component theorem(kind = "theorem", id = none, name = none) -%}
+{%- if name %}
+<aside class="marginnote">
+{{ name | markdown(inline = true) | safe }}
+</aside>
+{%- endif %}
+<div class="{{ kind }}"{% if id %} id="{{ id }}"{% endif %}>
+{{ body | markdown | safe }}
+</div>
+{%- endcomponent theorem %}

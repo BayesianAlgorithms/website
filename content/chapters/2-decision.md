@@ -20,13 +20,13 @@ This will not require a lot of mathematical background beyond an appropriate deg
 In particular, let `$\mathcal{M}_1(\cdot )$` be the space of probability distributions over a given set.
 Let us begin.
 
-{{ section() }}
+{{ <section first={true}/> }}
 
 ## 2.1. Definitions and Basic Examples
 
 We start with the most important definition in this book.
 
-{% theorem(id="def-decision-problem", kind="definition", name="Episodic Decision Problem") %}
+{% <theorem id="def-decision-problem" kind="definition" name="Episodic Decision Problem"> %}
 **Definition 2.1.**
 An *episodic decision problem* is defined by the following:
 1. An *action space* `$A$`.
@@ -35,15 +35,15 @@ An *episodic decision problem* is defined by the following:
     1. A *true reward function* `$r\in\mathcal{R}$`.
     2. A *reward distribution* `$q\in\mathcal{M}_1(\mathcal{R})$`.
     3. A *sequence of true reward functions* `$r_t\in\mathcal{R}$` for `$t=1,..,T$`.
-    {{ endlist() }}
+    {{ <endlist/> }}
     Depending on the chosen option, we say that the respective problems are of the *stochastic*, *Bayesian*, and *oblivious adversarial* variants.
 4. An *observation space* `$\Sigma$`.
 5. A *feedback function* `$\sigma : \mathcal{R} \times A \to \mathcal{M}_1(\Sigma)$`.
-{% end %}
+{% </theorem> %}
 
-The idea behind this definition---whose non-episodic form, as well as naming, dates at least to {% cite(keys=["blackwell51", "blackwell53"], n=[1, 1]) %}Blackwell (1951, 1953){% end %}---is to formalize a decision-making process that proceeds over *episodes*, indexed by discrete time points `$t\in\mathbb{N}$`.
+The idea behind this definition---whose non-episodic form, as well as naming, dates at least to {% <cite keys={["blackwell51", "blackwell53"]} n={[1, 1]}> %}Blackwell (1951, 1953){% </cite> %}---is to formalize a decision-making process that proceeds over *episodes*, indexed by discrete time points `$t\in\mathbb{N}$`.
 Assuming for sake of introduction that we are considering the stochastic variant, this process takes place as follows:
-1. At time `$t$`, a thinking robot,{{ footnote_ref() }} called the *learner*, chooses an action `$a_t\in A$`.
+1. At time `$t$`, a thinking robot,{{ <footnote_ref n={1}/> }} called the *learner*, chooses an action `$a_t\in A$`.
 2. The learner receives a reward `$r(a_t)$`, but does not observe this reward.
 3. Instead, the learner observes the random feedback `$\sigma_t \sim  \sigma(r, a_t)$`.
 
@@ -51,19 +51,19 @@ At the next time point `$t+1$`, the learner may then select a new, potentially r
 Thus, the learner knows the *reward class*, the *actions it chose*, and the *history of observations*, but not the true reward function itself.
 In fact, it is precisely this lack of knowledge that formalizes the sense in which the learner is making decisions under *uncertainty*.
 
-{% footnote() %}
-In his seminal work on the foundations of Bayesian probability, {% cite(keys=["jaynes03"], n=[1]) %}Jaynes (2003){% end %} famously introduced the metaphor of a thinking robot, and used it to illustrate how conditional probability can be seen as an extension of Boolean logic which incorporates uncertainty---leading to the framework we call *Bayesian learning*. We conceptualize our thinking robot similarly, but will instead study how it should *resolve* its uncertainty in order to act---in particular, we will want to know how often the robot chooses the right actions, even if its internal model of the world differs from reality. As we proceed, more and more of the moving parts that make up this perspective will be made precise.
-{% end %}
+{% <footnote n={1}> %}
+In his seminal work on the foundations of Bayesian probability, {% <cite keys={["jaynes03"]} n={[1]}> %}Jaynes (2003){% </cite> %} famously introduced the metaphor of a thinking robot, and used it to illustrate how conditional probability can be seen as an extension of Boolean logic which incorporates uncertainty---leading to the framework we call *Bayesian learning*. We conceptualize our thinking robot similarly, but will instead study how it should *resolve* its uncertainty in order to act---in particular, we will want to know how often the robot chooses the right actions, even if its internal model of the world differs from reality. As we proceed, more and more of the moving parts that make up this perspective will be made precise.
+{% </footnote> %}
 
 This defines the protocol according to which the learner interacts.
 It is not the most general form possible---in particular, it excludes adaptive adversaries that react to the learner's actions, which we will consider in [Chapter 7](/chapters/thompson-sampling/)---but we believe it achieves a good balance between being general yet not-too-difficult to define.
 Let us now consider a set of examples, which will serve to make this otherwise-abstract concept significantly more concrete.
 We will start with the simplest one---the trivial case in which there is no uncertainty.
 
-{% theorem(kind="example", name="Trivial Episodic Decision Problem") %}
+{% <theorem kind="example" name="Trivial Episodic Decision Problem"> %}
 **Example 2.2.**
 An episodic decision problem is called *trivial* if `$\mathcal{R} = \{r\}$` is a singleton.
-{% end %}
+{% </theorem> %}
 
 Here, the learner knows the reward function, as the function class is so small that one can infer the true reward---or analog thereof, in the non-stochastic variants---from the function class.
 Therefore, there is no uncertainty, and all the learner needs to do is solve the optimization problem
@@ -78,7 +78,7 @@ By doing so, the learner can achieve the best possible reward irrespective of th
 A related form of triviality also occurs if `$|A|=1$`: without distinct actions, there is nothing to learn and no need for exploration.
 To see these phenomena, we consider the next example.
 
-{% theorem(kind="example", name="Multi-armed Bandit") %}
+{% <theorem kind="example" name="Multi-armed Bandit"> %}
 **Example 2.3.**
 An episodic decision problem is called a *stochastic multi-armed bandit* with `$K\in\mathbb{N}$` *arms* and standard Gaussian noise if:
 1. The action space is `$A = [K]$`.
@@ -86,7 +86,7 @@ An episodic decision problem is called a *stochastic multi-armed bandit* with `$
 3. We are considering the stochastic variant.
 4. The observation space is `$\Sigma=\mathbb{R}$`.
 5. The feedback function is `$\sigma(r,a)=r(a) + \varepsilon(a)$`, where `$\varepsilon\sim\operatorname{N}(0,1)$`.
-{% end %}
+{% </theorem> %}
 
 Here, we have implicitly associated the random function `$\sigma : \Omega\times\mathcal{R}\times A\to\Sigma$`, where `$\Omega$` is a probability space, with its distribution, which we also denote by `$\sigma : \mathcal{R}\times A\to\mathcal{M}_1(\Sigma)$`, thus ensuring the definition makes sense.
 See [Appendix A](/chapters/appendix/#a-mathematical-background) for more on the conventions needed to ensure this notation is unambiguous.
@@ -106,12 +106,12 @@ Indeed, it is often a good idea to first understand how a given setting works by
 
 There is absolutely nothing which stops us from defining bandits in substantially greater generality.
 
-{% theorem(kind="example", name="Bandit") %}
+{% <theorem kind="example" name="Bandit"> %}
 **Example 2.4.**
 An episodic decision problem is called a *bandit* if:
 1. The observation space is `$\Sigma=\mathbb{R}$`.
 2. The feedback function is `$\sigma(r,a)=r(a) + \varepsilon(a)$`, where `$\varepsilon$`, called the *noise*, is a random variable satisfying `$\operatorname*{\mathbb{E}} \varepsilon(a) = 0$`.
-{% end %}
+{% </theorem> %}
 
 Here, the action space `$A$` and reward function class `$\mathcal{R}$` are allowed to be general.
 Moreover, it makes sense to consider stochastic, Bayesian, and adversarial variants---in the first and second case, often with Gaussian or sub-Gaussian noise---and in the third case, usually with `$\varepsilon = 0$` deterministically, which the definition allows.
@@ -119,7 +119,7 @@ Only the structure of the feedback function---namely, *play an action, learn abo
 
 We can contrast bandits with an episodic decision problem with a simpler feedback structure, given as follows.
 
-{% theorem(kind="example", name="Stochastic Online Learning") %}
+{% <theorem kind="example" name="Stochastic Online Learning"> %}
 **Example 2.5.**
 An episodic decision problem is called a *stochastic online learning* problem with `$N\in\mathbb{N}$` *actions* and Gaussian noise if:
 1. The action space is `$A = [N]$`.
@@ -127,52 +127,52 @@ An episodic decision problem is called a *stochastic online learning* problem wi
 3. We are considering the stochastic variant.
 4. The observation space is `$\Sigma=\mathbb{R}^N$`.
 5. The feedback function is `$\sigma(r,a)=r + \varepsilon$`, where `$\varepsilon_n\sim\operatorname{N}(0,1)$` for `$n\in[N]$`.
-{% end %}
+{% </theorem> %}
 
 Here, unlike in a bandit, the learner observes a noisy version of the reward of *all* arms, not just the ones they played.
 This means the learner no longer has to explore---at least, as long as the problem variant in question is not adversarial.
 In [Chapter 7](/chapters/thompson-sampling/), we will see that the adversarial variant of this problem---where, as before, one would typically consider `$\varepsilon=0$` deterministically---is surprisingly rich, and provides a good idealized setting within which one can study randomized exploration from a fundamental point of view.
 
-{% theorem(kind="example", name="Full Feedback") %}
+{% <theorem kind="example" name="Full Feedback"> %}
 **Example 2.6.**
 An episodic decision problem is called a general-action *online learning* problem, or is said to have *full feedback*, if:
 1. The observation space is `$\Sigma=\mathbb{R}^A$`.
 2. The feedback function is `$\sigma(r,a)=r + \varepsilon$`, where `$\varepsilon : A \to \mathbb{R}$`, called the *noise*, is a random function satisfying `$\operatorname*{\mathbb{E}} \varepsilon(a) = 0$` for all `$a$`.
-{% end %}
+{% </theorem> %}
 
 There are many possible episodic decision problems which sit in-between full feedback and bandit feedback---that is, ones where the learner observes the reward of the action they take, potentially up to noise, along with additional side information that the learner can benefit from.
 These are as follows.
 
-{% theorem(kind="example", name="Decision-making with Structured Observations") %}
+{% <theorem kind="example" name="Decision-making with Structured Observations"> %}
 **Example 2.7.**
 An episodic decision problem is said to have *stronger-than-bandit feedback*, if:
 1. The observation space is `$\Sigma = O \times \mathbb{R}$` for some *observation space* `$O$`.
 2. The feedback function is `$\sigma(r,a) = (o(r,a), r(a) + \varepsilon(a))$` for a function `$o : \mathcal{R} \times A \to O$`, where we have `$\operatorname*{\mathbb{E}} \varepsilon(a) = 0$`.
 
 If, additionally, `$A$` is a finite set, it is called *decision-making with structured observations*.
-{% end %}
+{% </theorem> %}
 
 This class is notable because significant work has gone into understanding its theoretical structure, and we know a fair bit about the fundamental quantities---called *decision-estimation coefficients*---that determine problem difficulty, in spite of its rather general character.
-We refer the interested reader to {% cite(keys=["foster23"], n=[1]) %}Foster and Rakhlin (2023){% end %}, which provides a comprehensive treatment of these ideas.
+We refer the interested reader to {% <cite keys={["foster23"]} n={[1]}> %}Foster and Rakhlin (2023){% </cite> %}, which provides a comprehensive treatment of these ideas.
 
 Decision-making with structured observations is not the only such class: one can also say a surprising amount about problems where `$A$`, `$\Sigma$`, and `$\mathcal{R}$` are finite.
 
-{% theorem(kind="example", name="Partial Monitoring Game") %}
+{% <theorem kind="example" name="Partial Monitoring Game"> %}
 **Example 2.8.**
 An episodic decision problem is said to be a *partial monitoring game* if:
 1. The action space `$A$` is a finite set.
 2. The reward function class `$\mathcal{R}$` is a finite set.
 3. We are considering the adversarial variant.
 4. The observation space `$\Sigma$` is a finite set.
-{% end %}
+{% </theorem> %}
 
 The stochastic and Bayesian variants are also known as *stochastic partial monitoring games* and *Bayesian partial monitoring games*, respectively.
 This is somewhat of a misnomer, particularly for the Bayesian variant, which corresponds to a stochastic control problem rather than a bona-fide game with more than one player.
-This is one motivation behind our choice of the name *episodic decision problem*,{{ footnote_ref() }} following {% cite(keys=["blackwell51", "blackwell53"], n=[2, 2]) %}Blackwell (1951, 1953){% end %}, to describe the general case.
+This is one motivation behind our choice of the name *episodic decision problem*,{{ <footnote_ref n={2}/> }} following {% <cite keys={["blackwell51", "blackwell53"]} n={[2, 2]}> %}Blackwell (1951, 1953){% </cite> %}, to describe the general case.
 
-{% footnote() %}
+{% <footnote n={2}> %}
 This name should also never be confused with the notion of a *decision problem* in the sense of Turing machines or decidability, which is completely unrelated and will never arise in this book.
-{% end %}
+{% </footnote> %}
 
 A remarkable fact about this problem class is that, in a sense we will soon precisely define, there are only four possible problem difficulties: *trivially easy*, *bandit-like*, *harder-than-bandit*, and *impossible*.
 This is in spite of the fact that---except for finiteness of `$A$`, `$\Sigma$`, and `$\mathcal{R}$`---the class is completely general!
@@ -180,7 +180,7 @@ Comparatively less is known about algorithms for this problem class.
 
 We now turn to examples of a different kind---namely, problems that capture the structure of numerical algorithms used for various purposes in the mathematical and computer sciences.
 
-{% theorem(kind="example", name="First-order Convex Optimization") %}
+{% <theorem kind="example" name="First-order Convex Optimization"> %}
 **Example 2.9.**
 An episodic decision problem is said to be a *convex optimization problem with a first-order oracle* if:
 1. The action space `$A\subseteq\mathbb{R}^d$` is a convex set.
@@ -188,7 +188,7 @@ An episodic decision problem is said to be a *convex optimization problem with a
 3. We are considering the stochastic variant.
 4. The observation space is `$\Sigma = \mathbb{R}^{d+1}$`.
 5. The feedback function is `$\sigma(r,a) = (r(a), \nabla r(a))$`.
-{% end %}
+{% </theorem> %}
 
 In this example, the learner's aim is to minimize a convex function.
 They are allowed to evaluate it at every time point, and observe its pointwise value and gradient (in the subdifferential sense).
@@ -201,7 +201,7 @@ This example should immediately evoke the level of generality that episodic deci
 Among such problems, in this book, we will focus on the class of *black-box optimization*---where we note that black-box optimization problems can also be seen as bandits where `$A = [0,1]^d$` and `$\mathcal{R}$` consists of continuous functions with an additional prescribed degree of smoothness.
 There is one more problem class which is very much worthy of mention in our overview.
 
-{% theorem(kind="example", name="Episodic Reinforcement Learning") %}
+{% <theorem kind="example" name="Episodic Reinforcement Learning"> %}
 **Example 2.10.**
 Let `$(\mathcal{S},\mathcal{A},r,p,\gamma)$` be an infinite-horizon discounted Markov decision process with initial state `$s_0\in\mathcal{S}$`, and let `$\mathcal{R}'$` be a class of reward functions for the Markov decision process, with `$r\in\mathcal{R}'$`.
 An episodic decision problem is said to be an *episodic reinforcement learning problem* if:
@@ -210,7 +210,7 @@ An episodic decision problem is said to be an *episodic reinforcement learning p
 3. We are considering the stochastic variant, and the true reward function is taken to be `$r$`, or more precisely, the value function `$V^{(\cdot )}(s_0; r)$`.
 4. The observation space is the space of all state-action-reward sequences, namely `$\Sigma = \{(s_{(\cdot )},a_{(\cdot )},r_{(\cdot )}) : \mathbb{N} \to \mathcal{S}\times\mathcal{A}\times\mathbb{R}\}$`.
 5. The feedback function is `$\sigma(r',\pi) = (s_\tau, \pi(s_\tau), r'(s_\tau,\pi(s_\tau)))_{\tau=0}^\infty$`, where the rollout is random with distribution determined by `$p$`, and we implicitly identify each value function with a reward function producing it.
-{% end %}
+{% </theorem> %}
 
 There are many possible variants on this definition.
 In this one, the idea is that, at each episode, we try out a new policy and observe a rollout under that policy.
@@ -231,23 +231,23 @@ This book, however, is about *algorithms* rather than problems, and so we will c
 In particular, it is about algorithms that quantify uncertainty---which arises through knowledge of only the function class `$\mathcal{R}$` rather than the true reward function `$r$`---through probabilistic models, with learning performed using Bayes' Rule.
 To understand this, we proceed to understand what constitutes an algorithm, what kind of algorithms are Bayesian, and how to assess an algorithm's performance.
 
-{{ section() }}
+{{ <section/> }}
 
 ## 2.2. Algorithms for Decision-making
 
 We now define the notion of an *algorithm*, previously used informally during our survey of episodic decision problems.
 Let `$\operatorname{Seq}(\cdot )$` be the space of finite-length sequences, defined over an underlying set.
 
-{% theorem(id="def-algorithm", kind="definition", name="Decision-making Algorithm") %}
+{% <theorem id="def-algorithm" kind="definition" name="Decision-making Algorithm"> %}
 **Definition 2.11.**
 An *algorithm* for solving an episodic decision problem is a function `$p : \operatorname{Seq}(A \times \Sigma) \to \mathcal{M}_1(A)$`.
 We refer to the space of algorithms as `$\mathcal{P}$`.
-{% end %}
+{% </theorem> %}
 
 Algorithms are also sometimes called *policies* or *strategies*, and we may use these terms interchangeably, unless this would become ambiguous in the given context.
 The simplest possible algorithm one should generally consider consists of playing actions uniformly at random, without any learning.
 
-{% theorem(kind="definition", name="Random Search") %}
+{% <theorem kind="definition" name="Random Search"> %}
 **Definition 2.12.**
 Suppose `$A$` is either a finite set, or a sufficiently well-behaved compact subset of `$\mathbb{R}^d$`.
 The *random search* algorithm plays actions uniformly at random at all times `$t$`, that is
@@ -258,7 +258,7 @@ a_t \sim\operatorname{U}(A)
 \tag{2.2}
 $$
 ```
-{% end %}
+{% </theorem> %}
 
 It is clear that random search will not be a strong algorithm for many problems, as it behaves in an anti-greedy, purely-exploratory fashion, and doesn't learn anything from the data.
 We will shortly make this claim precise.
@@ -268,14 +268,14 @@ In formulating an algorithm, recall that the learner is allowed to use the rewar
 We now take the first step to introducing the class of algorithms this book is named after.
 Let `$\mathcal{M}_1(\cdot \mid\cdot )$` be the space of all conditional distributions---formally, the space of probability kernels---over a given pair of sets.
 
-{% theorem(kind="definition", name="Bayesian Model") %}
+{% <theorem kind="definition" name="Bayesian Model"> %}
 **Definition 2.13.**
 A *Bayesian model* is defined by the following:
 1. Let `$p_r \in\mathcal{M}_1(\mathcal{R})$` be the *prior*.
 2. Let `$p_{s\mid r,a} \in\mathcal{M}_1(\Sigma\mid\mathcal{R}\times A)$` be the *likelihood*.
 
 For any `$t$` and any dataset `$a_{1:t}$`, `$\sigma_{1:t}$`, we denote the respective *posterior distribution* under the model by `$p_{r \mid a_{1:t},\sigma_{1:t}} \in \mathcal{M}_1(\mathcal{R}\mid\operatorname{Seq}(A \times \Sigma))$`.
-{% end %}
+{% </theorem> %}
 
 A Bayesian model describes a general way by which the learner quantifies uncertainty about the unknown quantity of interest---that is, in an episodic decision problem, the unknown reward function.
 In adversarial settings, we allow ourselves to also consider Bayesian models defined over sequences of reward functions---where each time step has its own prior, and its own likelihood---but omit this here to ease presentation.
@@ -289,7 +289,7 @@ By itself, a Bayesian model only describes *how to learn*.
 It does *not* describe *what to do* with what has been learned---how to use the obtained representation of the learner's uncertainty to select future actions.
 This additional ingredient must be specified in order to obtain an actual algorithm.
 
-{% theorem(kind="definition", name="Bayesian Algorithm") %}
+{% <theorem kind="definition" name="Bayesian Algorithm"> %}
 **Definition 2.14.**
 A *Bayesian decision-making algorithm* is a pair consisting of a Bayesian model and a potentially-randomized *decision rule*
 ```
@@ -299,7 +299,7 @@ $$
 \tag{2.3}
 $$
 ```
-{% end %}
+{% </theorem> %}
 
 Thus, the extra ingredient which is part of a Bayesian algorithm is a rule by which one transforms distributions over unknown reward functions into distributions over actual actions.
 This rule tells the learner how to translate what they know into what they do.
@@ -308,15 +308,15 @@ Additionally, we note that one can also consider time-varying Bayesian algorithm
 
 It is extremely important to note that Bayesian algorithms can be used on non-Bayesian problems---so much so that we will state it with emphasis:
 
-{% callout() %}
+{% <callout> %}
 A Bayesian algorithm constitutes a valid algorithm for *any* episodic decision problem variant, including stochastic and adversarial ones.
-{% end %}
+{% </callout> %}
 
 Thus, throughout this book, we will find ourselves thinking about Bayesian algorithms for non-Bayesian problems---this will constitute a form of *model-mismatch*, meaning that the model differs from reality.
 We will return to this concept in the sequel, once we have developed an understanding of how to evaluate models under different forms of reality.
 The vast majority of Bayesian algorithms in current use come from the following class.
 
-{% theorem(kind="definition", name="Acquisition Function") %}
+{% <theorem kind="definition" name="Acquisition Function"> %}
 **Definition 2.15.**
 A Bayesian decision-making algorithm is said to be based on an *acquisition function* `$\alpha_t : A \to \mathbb{R}$`, which we potentially allow to be random, if, for every posterior distribution, its decision rule takes the form
 ```
@@ -326,20 +326,20 @@ $$
 \tag{2.4}
 $$
 ```
-{% end %}
+{% </theorem> %}
 
 Algorithms based on acquisition functions, therefore, are those for which the Bayesian model's posterior distribution `$p_{r \mid a_{1:t},\sigma_{1:t}}$` is used to form a function `$\alpha_t$` which ranks the actions according to which is the most-promising.
 The algorithm proceeds by choosing the highest-ranking action.
 We allow for both deterministic and randomized *tie-breaking rules*, but suppress them from notation unless their role is critical to the situation at hand.
 Every Bayesian algorithm class considered in this book will turn out to have the presented form.
 
-{{ section() }}
+{{ <section/> }}
 
 ## 2.3. Evaluating Performance via Regret
 
 Having formalized the notion of a decision-making algorithm, and introduced the class of algorithms we will study, we now turn to the question of what it means for an algorithm to *perform well*, starting from the stochastic variant where there is a single ground-truth reward function `$r$`.
 
-{% theorem(kind="definition", name="Regret") %}
+{% <theorem kind="definition" name="Regret"> %}
 **Definition 2.16.**
 The *regret* of an algorithm `$p$` is defined as
 ```
@@ -349,7 +349,7 @@ R_T(p, r) = \operatorname*{\mathbb{E}}_{a_t\sim p} \sup_{a\in A} \sum_{t=1}^T r(
 \tag{2.5}
 $$
 ```
-{% end %}
+{% </theorem> %}
 
 Regret, therefore, is the difference between how well the algorithm actually did, and how well it *could have done* if it knew what the ground-truth reward actually was.
 It is always non-negative, and minimizing regret is equivalent to maximizing rewards.
@@ -364,9 +364,9 @@ In most cases, we will take this to mean algorithms that perform well no matter 
 Ideally, we will want this to hold for any time horizon---but it will be interesting to study how behavior should change according to different horizons.
 This will allow us, for example, to make precise the intuitive idea that, if one has more time to learn, they should explore more.
 
-{% parmarginnote() %}
+{% <parmarginnote> %}
 High-probability vs. Expected Regret
-{% end %}
+{% </parmarginnote> %}
 
 The above notion of regret is formulated in expectation.
 It is also possible to study *random regret*---that is, the random variable inside the expectation above.
@@ -376,7 +376,7 @@ The remaining `$\varepsilon$`-probability might correspond to extremely rare cas
 The notion presented above is sometimes called *cumulative regret*, since it counts all rewards at all time points.
 This is not the only reasonable choice: one can just as well restrict attention to the reward obtained at the final time point.
 
-{% theorem(kind="definition", name="Simple Regret") %}
+{% <theorem kind="definition" name="Simple Regret"> %}
 **Definition 2.17.**
 The *simple regret* of an algorithm `$p$` is defined as
 ```
@@ -386,7 +386,7 @@ r_T(p, r) = \operatorname*{\mathbb{E}}_{a_T\sim p} \sup_{a\in A} r(a) - r(a_T)
 \tag{2.6}
 $$
 ```
-{% end %}
+{% </theorem> %}
 
 Compared to cumulative regret, this notion effectively disregards the suboptimality of the points the algorithm chooses to explore.
 We will see that its overall behavior is similar---but, for a given algorithm class, it can be much more convenient to work with either simple regret, or cumulative regret, depending on the situation.
@@ -394,7 +394,7 @@ We will see that its overall behavior is similar---but, for a given algorithm cl
 Both of the preceding notions are finite-horizon notions, in the sense that they are defined for a given `$T\in\mathbb{N}$`.
 It can be just as natural to instead work with an infinite-horizon discounted formulation, as follows.
 
-{% theorem(kind="definition", name="Discounted Cumulative Regret") %}
+{% <theorem kind="definition" name="Discounted Cumulative Regret"> %}
 **Definition 2.18.**
 Let `$\gamma<1$`.
 The *discounted cumulative regret* of an algorithm `$p$` is defined as
@@ -405,7 +405,7 @@ R_\gamma(p, r) = \operatorname*{\mathbb{E}}_{a_t\sim p} \sup_{a\in A} \sum_{t=1}
 \tag{2.7}
 $$
 ```
-{% end %}
+{% </theorem> %}
 
 One advantage of a discounted formulation is that it is stationary with respect to time.
 On the other hand, a disadvantage is that discount factors can be slightly less intuitive to think about than time horizons.
@@ -440,7 +440,7 @@ A second way to introduce stationarity with respect to time is to *allow the alg
 To facilitate non-trivial behavior, we introduce a strictly positive cost function `$c : A \to \mathbb{R}$`.
 We can then define the following notion.
 
-{% theorem(kind="definition", name="Cost-adjusted Simple Regret") %}
+{% <theorem kind="definition" name="Cost-adjusted Simple Regret"> %}
 **Definition 2.19.**
 The *cost-adjusted simple regret* of an algorithm `$p$` is defined as
 ```
@@ -450,7 +450,7 @@ r_c(p, r) = \operatorname*{\mathbb{E}}_{a_t\sim p} \sup_{a\in A} r(a) - r(a_T) +
 \tag{2.11}
 $$
 ```
-{% end %}
+{% </theorem> %}
 
 For this to be well-defined, together with actions, the algorithm must also output a binary variable which determines whether to continue to the next episode, or to stop: we refer to this as the *stopping policy*, and to the actual action `$a_t$` as the *steering policy*, in contexts where the distinction applies.
 We require the stopping policy to be defined with respect to the same history of observations as the steering policy, and implicitly extend the notion of a Bayesian algorithm to also cover this case.
@@ -461,7 +461,7 @@ We use simple rather than cumulative regret to ensure stopping immediately is no
 In general, one can mix-and-match the definitions of this chapter as needed, in essentially all cases where it makes sense to do so.
 We now turn to regret for non-stochastic variants.
 
-{% theorem(kind="definition", name="Bayesian Regret") %}
+{% <theorem kind="definition" name="Bayesian Regret"> %}
 **Definition 2.20.**
 The *Bayesian regret* of an algorithm `$p$` is defined as
 ```
@@ -471,11 +471,11 @@ R_T(p, q) = \operatorname*{\mathbb{E}}_{r\sim q} R_T(p,r) = \operatorname*{\math
 \tag{2.12}
 $$
 ```
-{% end %}
+{% </theorem> %}
 
-{% parmarginnote() %}
+{% <parmarginnote> %}
 Model-match vs. Model-mismatch
-{% end %}
+{% </parmarginnote> %}
 
 Thus, Bayesian regret is simply regret averaged over the reward functions sampled from the reward distribution `$q$`.
 For a Bayesian algorithm `$p$`, if the prior `$p_r$` matches the true reward distribution `$q$`, and the likelihood `$p_{s\mid r,a}$` matches the distribution induced by the feedback function `$\sigma$`, we say that we are in the *model-matched* setting.
@@ -485,14 +485,14 @@ Both settings lead to a rich and interesting theory, each with their own specifi
 We have used the term *Bayesian* to refer to several distinct concepts: (i) episodic decision problems of the *Bayesian variant*, (ii) *Bayesian algorithms* for general episodic decision problems, and (iii) the above notion of *Bayesian regret*.
 When the first and third concepts are combined, something very special happens: the formulation gives rise to a Markov decision process.
 
-{% theorem(kind="definition", name="Underlying MDP") %}
+{% <theorem id="def-underlying-mdp" kind="definition" name="Underlying MDP"> %}
 **Definition 2.21.**
 For an episodic decision problem of the Bayesian variant, define its *underlying Markov decision process* by:
 1. States: `$S_{\operatorname{MDP}} = \operatorname{Seq}(A\times\Sigma)$`, with initial state `$s_0 = \emptyset$`.
 2. Actions: `$A_{\operatorname{MDP}} = A$`.
 3. Transition kernel: given an action `$a_t$`, we have `$s_{t+1} = s_t \oplus (a_t,\sigma_t)$`, where `$\sigma_t\sim \sigma(r, a_t)$` with `$r\sim q(\cdot \mid s_t)$` drawn from the respective posterior, and `$\oplus$` denotes the operation of appending an element to a finite sequence.
 4. Rewards: at each round, `$r_{\operatorname{MDP}}(s,a) = r(a)$`, where `$r\sim q(\cdot \mid s)$`.
-{% end %}
+{% </theorem> %}
 
 Here, states correspond to the data gathered so far by the algorithm.
 In turn, algorithms for the episodic decision problem are equivalent to policies for its underlying Markov decision process.
@@ -506,9 +506,9 @@ $$
 where `$C = \operatorname*{\mathbb{E}}_{r\sim q} \sup_{a\in A} \sum_{t=1}^T r(a)$` depends only on `$q$` and not on `$p$`, and is viewed as a prior-dependent constant.
 This statement extends from the initial state `$s_0$` to general states `$s$`, as long as the Bayesian regret term is understood to be conditioned on the corresponding history: in doing so, `$C$` continues to be a constant, in the sense that it depends on `$s$` but not on `$p$`.
 
-{% parmarginnote() %}
+{% <parmarginnote> %}
 Bayesian-optimal Algorithm
-{% end %}
+{% </parmarginnote> %}
 
 This correspondence---between episodic decision problems and Markov decision processes---is unique to the Bayesian setting.
 It has significant consequences, including the existence of an optimal value function `$V^*_{\operatorname{MDP}}$`, and an optimal policy whose respective algorithm we call the *Bayesian-optimal algorithm*.
@@ -535,7 +535,7 @@ Defining what it means to be analogous is tricky, because a given feedback funct
 To handle this, the rough idea is to start with `$\sigma$`, and replace each reward `$r\in\mathcal{R}$` by some `$r'\in\mathcal{R}'$`: this completely changes the rewards, but preserves feedback structure, since the rest of `$\sigma$` is kept the same.
 These rewards `$r'$` can potentially include new actions `$a'\notin A$`, as long as they are assumed to be non-informative.
 
-{% theorem(kind="definition") %}
+{% <theorem kind="definition"> %}
 **Definition 2.22.**
 Let `$\sigma : \mathcal{R} \times A \to \mathcal{M}_1(\Sigma)$` be a feedback function.
 A feedback function `$\sigma' : \mathcal{R}' \times A' \to \mathcal{M}_1(\Sigma')$` is said to be *analogous to `$\sigma$`* if:
@@ -545,7 +545,7 @@ A feedback function `$\sigma' : \mathcal{R}' \times A' \to \mathcal{M}_1(\Sigma'
 4. We have `$\sigma'(r',a') = \delta_\boxtimes$` for all `$r'\in\mathcal{R}'$` and `$a'\in A'\setminus A$`.
 
 We say that a pair of feedback functions `$\sigma'_1,\sigma'_2$` is *mutually-analogous* to `$\sigma_1, \sigma_2$` if analogousness holds individually under a shared function `$\rho$`.
-{% end %}
+{% </theorem> %}
 
 We will also need a suitable notion of what it means to add noise.
 For a probability kernel `$g\in\mathcal{M}_1(\Sigma\mid\Sigma\times A)$`, define its action on measures `$\mu\in\mathcal{M}_1(\Sigma)$` by integration in the standard manner, namely `$g(\mu,a) = \int_\Sigma g(\cdot \mid s, a) \mathop{}\!\mathrm{d}\mu(s) \in \mathcal{M}_1(\Sigma)$` for all `$a\in A$`.
@@ -558,7 +558,7 @@ Observe that this set differs for different `$\sigma$`: the more feedback is giv
 
 With these concepts at hand, we are finally ready to state the key result.
 
-{% theorem(id="thm-blackwell-informativeness", kind="theorem", name="Blackwell's Informativeness Theorem") %}
+{% <theorem id="thm-blackwell-informativeness" kind="theorem" name="Blackwell's Informativeness Theorem"> %}
 **Theorem 2.23.**
 Let `$\sigma_1 : \mathcal{R} \times A \to \mathcal{M}_1(\Sigma)$` and `$\sigma_2 : \mathcal{R} \times A \to \mathcal{M}_1(\Sigma)$` be two feedback functions, where `$A$` and `$\Sigma$` are assumed finite.
 Then the following are equivalent:
@@ -567,12 +567,12 @@ Then the following are equivalent:
 3. Under the same quantifiers as in the first point, the set of feasible action-sequence distributions is larger under `$\sigma_1$` than `$\sigma_2$`, in the sense `$\Lambda_2 \subseteq \Lambda_1$`.
 
 As consequence, one can define the *Blackwell order* `$\preceq$` over feedback functions, which forms a partial order, up to an equivalence.
-{% end %}
+{% </theorem> %}
 
 This result tells us that there are three ways of thinking about informativeness of feedback functions: (1) with more information, Bayesian-optimal algorithms achieve more reward in expectation, (2) more-informative feedback functions contain less noise, and (3) under a more-informative feedback function, algorithms can choose a wider range of possible distributions over actions.
 We view the fact that all three are actually equivalent as a strong piece of evidence that our definitions are the right ones and lead to a rich mathematical theory.
 
-We defer the proof to [Section 2.7](/chapters/decision-making-under-uncertainty/#2-7-deferred-proofs), noting briefly that: (a) quantifying over families of episodic decision problems is necessary for equivalence as opposed to implication in one direction, (b) finiteness is not essential, and is assumed only to focus attention on decision-theoretic rather than regularity aspects, and (c) there are extensions of this result to other settings, beyond our model-matched Bayesian setting, for example through the concept of *Le Cam deficiency*---see {% cite(keys=["lecam86"], n=[1]) %}Le Cam (1986, Ch. 2, Sec. 3, Theorem 2){% end %} for a non-sequential variant.
+We defer the proof to [Section 2.7](/chapters/decision-making-under-uncertainty/#2-7-deferred-proofs), noting briefly that: (a) quantifying over families of episodic decision problems is necessary for equivalence as opposed to implication in one direction, (b) finiteness is not essential, and is assumed only to focus attention on decision-theoretic rather than regularity aspects, and (c) there are extensions of this result to other settings, beyond our model-matched Bayesian setting, for example through the concept of *Le Cam deficiency*---see {% <cite keys={["lecam86"]} n={[1]}> %}Le Cam (1986, Ch. 2, Sec. 3, Theorem 2){% </cite> %} for a non-sequential variant.
 
 We now briefly examine adversarial problems.
 Here, there is a major subtlety that one must wrangle with: we do not have a single ground-truth reward, not even a randomly-sampled one.
@@ -580,7 +580,7 @@ In all cases before, we compared ourselves with the optimal point, but for a seq
 What should one compare themselves to?
 The idea will be to introduce a *single* action `$a$` with respect to which to compare the algorithm's performance.
 
-{% theorem(kind="definition", name="Regret Relative to a Comparator Action") %}
+{% <theorem kind="definition" name="Regret Relative to a Comparator Action"> %}
 **Definition 2.24.**
 For an adversarial episodic decision problem, the *regret* of an algorithm `$p$` relative to a *comparator action* `$a\in A$` is defined as
 ```
@@ -590,11 +590,11 @@ R_a(p, r_1,..,r_T) = \operatorname*{\mathbb{E}}_{a_t\sim p} \sum_{t=1}^T r_t(a) 
 \tag{2.15}
 $$
 ```
-{% end %}
+{% </theorem> %}
 
-{% parmarginnote() %}
+{% <parmarginnote> %}
 Best Action in Hindsight
-{% end %}
+{% </parmarginnote> %}
 
 In particular, the regret against the *best action in hindsight* is defined as
 ```
@@ -618,7 +618,7 @@ As these notions are more advanced, we defer them for the moment: the critical t
 To conclude our overview of regret, we will now state the book's first set of actual results, which will not be difficult: we will study the regret of random search, as well as the obviously-bad algorithm that picks some arbitrary point over and over again.
 This might seem like a rather dry exercise, but it is worth doing, because certain details carry implications for benchmarking and are therefore worth drawing attention to.
 
-{% theorem(kind="proposition", name="Regret of Random Search") %}
+{% <theorem kind="proposition" name="Regret of Random Search"> %}
 **Proposition 2.25.**
 For any reward function `$r$` which is bounded and not (almost everywhere) constant, random search incurs linear regret, namely
 ```
@@ -628,9 +628,9 @@ R_T(p_{\operatorname{RS}},r) = \Theta(T)
 \tag{2.17}
 $$
 ```
-{% end %}
+{% </theorem> %}
 
-{% proof() %}
+{% <proof> %}
 *Proof.*
 This follows directly from definitions and linearity of expectation by
 ```
@@ -648,13 +648,13 @@ R_T(p_{\operatorname{RS}},r) &= \operatorname*{\mathbb{E}}_{a_t\sim p_{\operator
 $$
 ```
 where the final term is finite by boundedness of rewards, non-negative by definition of a supremum, and non-zero because the rewards are non-constant.
-{% end %}
+{% </proof> %}
 
 We have noted that random search is almost never a strong algorithm: it ignores the data, does not attempt to balance tradeoffs between explore and exploit, and instead only explores.
 Nonetheless, its performance should be compared to an even-worse algorithm: one that picks some arbitrary point over and over again.
 Let us show how to carry this comparison out---under finite actions and bounded rewards, for concreteness.
 
-{% theorem(kind="proposition") %}
+{% <theorem kind="proposition"> %}
 **Proposition 2.26.**
 Let `$A$` be finite with `$|A|\geq2$`, and let `$\mathcal{R} = \{r : A\to[-1,1]\}$` consist of bounded functions.
 For an action `$a$`, let `$p_{\delta_a}$` be the algorithm that deterministically plays `$a$`.
@@ -666,9 +666,9 @@ R_T(p_{\delta_a},r_a) = \sup_{\substack{p\in\mathcal{P}\\r\in\mathcal{R}}} R_T(p
 \tag{2.21}
 $$
 ```
-{% end %}
+{% </theorem> %}
 
-{% proof() %}
+{% <proof> %}
 *Proof.*
 Choose
 ```
@@ -692,15 +692,15 @@ R_T(p,r) &= \operatorname*{\mathbb{E}}_{a_t\sim p} \sup_{a\in A} \sum_{t=1}^T r(
 \end{align}
 $$
 ```
-{% end %}
+{% </proof> %}
 
 This seemingly-trivial pair of calculations already shows that random search can be much better than picking some arbitrary action.
 While both methods achieve `$\Theta(T)$` regret, for random search, the constant factor hidden in the `$\Theta$`-notation is exactly the gap between the best action and the average action with respect to the uniform distribution.
 This is usually smaller than the worst possible regret, and for this reason random search can be a good initial baseline to benchmark for problems where it is otherwise not clear what to do.
 
-{% parmarginnote() %}
+{% <parmarginnote> %}
 Maximizing Expected Value
-{% end %}
+{% </parmarginnote> %}
 
 Intuitively, one might expect that learning is necessary in order to achieve good performance on an episodic decision problem.
 One can therefore ask: by itself, does it suffice?
@@ -714,7 +714,7 @@ $$
 ```
 Let us see how this performs on a simple non-trivial example.
 
-{% theorem(kind="proposition") %}
+{% <theorem id="prop-expected-value-lower-bound" kind="proposition"> %}
 **Proposition 2.27.**
 Consider a stochastic multi-armed bandit, with `$|A|\geq 2$`, bounded rewards `$\mathcal{R} = \{r : A \to [0,1]\}$`, and standard Gaussian noise.
 Let the Bayesian model consist of a standard Gaussian prior on the rewards, along with a conjugate unit-variance Gaussian likelihood.
@@ -726,7 +726,7 @@ R_T(p_{\operatorname{EV}},r) = \Omega(T)
 \tag{2.25}
 $$
 ```
-{% end %}
+{% </theorem> %}
 
 The proof, given in [Section 2.7](/chapters/decision-making-under-uncertainty/#2-7-deferred-proofs), works by constructing a constant-probability unlucky event which causes the algorithm to never try the optimal action more than once.
 It is not difficult to construct similar failures for other problems, or for other models---indeed, an analogous result even holds for Bayesian regret in the model-matched setting!
@@ -737,7 +737,7 @@ This question turns out to be mathematically rich, and it will take the whole of
 We will see that several approaches, including ones with exploration mechanisms of very different-looking character, can work.
 To get there, we first need to understand a bit more about episodic decision problems, by developing a sense for what levels of performance are possible.
 
-{{ section() }}
+{{ <section/> }}
 
 ## 2.4. Problem Difficulty and Lower Bounds
 
@@ -766,7 +766,7 @@ The final ingredient we need to consider is some parameter that we can change in
 This could be the time horizon `$T$`, or for instance the size of the action space `$|A|$`.
 We will call the set of these variables `$V$`.
 
-{% theorem(kind="definition", name="Minimax Regret") %}
+{% <theorem kind="definition" name="Minimax Regret"> %}
 **Definition 2.28.**
 Consider a family of episodic decision problems of the stochastic variant, parameterized by a set of variables `$v\in V\subseteq\mathbb{R}^d$`.
 Define the *minimax regret*
@@ -778,13 +778,13 @@ M(v) = \inf_{p\in\mathcal{P}} \sup_{r\in\mathcal{R}} R_T(p,r)
 $$
 ```
 We define the *difficulty* of the parameterized family to be the rate by which `$M(v)$` varies with `$v$`.
-{% end %}
+{% </theorem> %}
 
 This means the difficulty is defined according to the best performance achievable by any algorithm, assuming it plays against the worst-case function within the given function class.
 We assume throughout that the episodic decision problem is regular enough for this value to be well-defined.
 The difficulty of a Bayesian variant is defined similarly, but where we do not consider worst-case performance, and replace it with average-case performance with respect to the reward function's distribution.
 
-{% theorem(kind="definition", name="Bayesian-optimal Regret") %}
+{% <theorem kind="definition" name="Bayesian-optimal Regret"> %}
 **Definition 2.29.**
 Consider a family of episodic decision problems of the Bayesian variant, parameterized by a set of variables `$v\in V\subseteq\mathbb{R}^d$`.
 Define the *Bayesian-optimal regret*
@@ -796,7 +796,7 @@ B(v) = \inf_{p\in\mathcal{P}} R_T(p,q)
 $$
 ```
 We define the *difficulty* of the parameterized family to be the rate by which `$B(v)$` varies with `$v$`.
-{% end %}
+{% </theorem> %}
 
 This definition coincides with the optimal value function of the problem's underlying Markov decision process up to constants, as seen previously.
 Thus, we can now reinterpret [Theorem 2.23](/chapters/decision-making-under-uncertainty/#thm-blackwell-informativeness) as characterizing the manner in which less-informative feedback functions lead to more-difficult problems.
@@ -808,17 +808,17 @@ This notion of difficulty therefore mirrors perspectives commonly found in compl
 To aid understanding, we now briefly state the rate of the two most basic examples considered previously---the latter, under two different reward function classes.
 We will omit various restrictions on the variables to ease notation, and will defer proofs of the necessary statements to later.
 
-{% theorem(kind="example") %}
+{% <theorem kind="example"> %}
 **Example 2.30.**
 The difficulty of online learning with `$N = |A|$` total actions and bounded rewards `$\mathcal{R} = \{r : A \to [-1,1]\}$`, under either a stochastic variant with standard Gaussian noise, or an adversarial variant without noise, is `$\sqrt{T\log N}$`.
-{% end %}
+{% </theorem> %}
 
-{% theorem(kind="example") %}
+{% <theorem kind="example"> %}
 **Example 2.31.**
 The difficulty of a multi-armed bandit with `$K = |A|$` arms and bounded rewards `$\mathcal{R} = \{r : A \to [-1,1]\}$`, under a stochastic variant with standard Gaussian noise, is `$\sqrt{KT}$`.
-{% end %}
+{% </theorem> %}
 
-{% theorem(kind="example") %}
+{% <theorem kind="example"> %}
 **Example 2.32.**
 The difficulty of a multi-armed bandit with `$K = |A|$` arms and bounded rewards with a gap of at least `$\Delta$`, namely
 ```
@@ -828,7 +828,7 @@ $$
 $$
 ```
 where `$a^* = \operatorname*{\arg\max}_{a\in A} r(a)$`, under a stochastic variant with standard Gaussian noise, is `$(K-1)\frac{\log T}{\Delta}$`.
-{% end %}
+{% </theorem> %}
 
 This illustrates how both the reward function class and the feedback function can affect an episodic decision problem's difficulty.
 We choose these three examples because the arguments involved are sufficiently simple that it is reasonable to present them as part of an introductory chapter---we will do so once a little bit more of the necessary machinery is established.
@@ -838,9 +838,9 @@ Why not just compute the saddle point arising in the minimax regret, and look at
 If this were feasible, it would be fantastic---but, unfortunately, there are only a few problems where computing this quantity, or its analog for other variants, is possible.
 Working with rates gives us the freedom to study a much larger class of possible algorithms, many of which will turn out to be interesting.
 
-{% parmarginnote() %}
+{% <parmarginnote> %}
 Regret Lower Bounds
-{% end %}
+{% </parmarginnote> %}
 
 Focusing on the rate means that, to compute the difficulty of an episodic decision problem, it suffices to compute a sufficiently-sharp *regret lower bound*
 ```
@@ -877,15 +877,15 @@ As we will see in this book, there are many algorithms one can consider---ones w
 From this viewpoint, finding a universal construction for difficult reward functions may seem daunting.
 We will bypass this challenge rather than solving it directly, through a fundamental idea which recurs in many different guises throughout computer science.
 
-{% parmarginnote() %}
+{% <parmarginnote> %}
 Hard Reward Distributions
-{% end %}
+{% </parmarginnote> %}
 
 The key idea is to not look for a family of difficult reward functions directly, but to instead look for a *hard distribution* `$q\in\mathcal{M}_1(\mathcal{R})$` over reward functions.
 Such a distribution should certify a regret lower bound in expectation.
 The key observation is that the existence of such a distribution implies the existence of a difficult reward function which certifies the required regret lower bound.
 
-{% theorem(kind="lemma") %}
+{% <theorem kind="lemma"> %}
 **Lemma 2.33.**
 Suppose there is a `$q\in\mathcal{M}_1(\mathcal{R})$` such that, for any `$p\in\mathcal{P}$`, we have
 ```
@@ -903,20 +903,20 @@ C \leq R_T(p,r_p)
 \tag{2.33}
 $$
 ```
-{% end %}
+{% </theorem> %}
 
-{% proof() %}
+{% <proof> %}
 *Proof.*
 Suppose the contrary, namely that `$R_T(p, r) < C$` for all `$r\in\mathcal{R}$`.
 Then by averaging over `$q$`, we would conclude `$\operatorname*{\mathbb{E}}_{r\sim q} R_T(p,r) < C$`---contradiction.
-{% end %}
+{% </proof> %}
 
 We can therefore pass from working with deterministic reward functions to working with randomized ones, and study what properties the corresponding distributions need to have.
 Naturally, these properties must be studied in full detail case-by-case.
 But there is a central principle to how they operate.
 Let us illustrate a special case of it through the following observation.
 
-{% theorem(kind="lemma", name="Equalizing Reward Distributions") %}
+{% <theorem kind="lemma" name="Equalizing Reward Distributions"> %}
 **Lemma 2.34.**
 Suppose that `$q$` is *equalizing*, in the sense that the function
 ```
@@ -927,9 +927,9 @@ $$
 ```
 is constant for any history of observations `$a_{1:t}, \sigma_{1:t}$`.
 Then `$C = R_T(\cdot ,q)$` is constant in its first argument, and thus we have `$C \leq R_T(p,r_p)$`.
-{% end %}
+{% </theorem> %}
 
-{% proof() %}
+{% <proof> %}
 *Proof.*
 We first note that, generically, the conditional expectation above does not depend on the learner's algorithm, so the statement itself makes sense.
 We have `$R_T(p,q) = \operatorname*{\mathbb{E}}_{\substack{a_t\sim p\\r\sim q}} \sup_{a\in A} \sum_{t=1}^T r(a) - r(a_t)$`.
@@ -948,7 +948,7 @@ $$
 ```
 where (i) uses equalization together with the fact that `$a_t$` is conditionally independent of `$r$`, and (ii) applies the Tower Rule, where the result does not depend on the choice of `$a'$`.
 Since `$r$` and `$a'$` are constant in `$p$`, the claim follows.
-{% end %}
+{% </proof> %}
 
 For reward distributions `$q$` with this property, no matter what an algorithm does, the conditional expected rewards of each action remain the same.
 There is nothing an algorithm can learn, it may as well play at random.
@@ -958,7 +958,7 @@ One important exception is the adversarial full feedback setting.
 In presenting these results, we defer proofs to [Section 2.7](/chapters/decision-making-under-uncertainty/#2-7-deferred-proofs).
 The key reason for this is they represent a jump in difficulty---not a large one, but enough that we would rather focus attention on showcasing what is known, before seeing how.
 
-{% theorem(kind="proposition") %}
+{% <theorem kind="proposition"> %}
 **Proposition 2.35.**
 Consider adversarial online learning under full feedback, with bounded rewards `$\mathcal{R} = \{r : A \to [-1,1]\}$` and no noise.
 Define the reward distribution `$q$` to be independent Rademacher across time and actions, namely
@@ -977,30 +977,30 @@ $$
 \tag{2.38}
 $$
 ```
-{% end %}
+{% </theorem> %}
 
 Constructions of this kind are fundamental in adversarial online learning, including generalizations where the action space `$A$` has a richer structure.
 If the adversary is playing random noise at every iteration, the learner has no hope of finding the best point, so their performance will be controlled by the typical gap between the best point and an average point.
 The bound follows by quantifying this gap using standard tools developed for analyzing expected suprema of random processes, here the sum of rewards over time.
 
-{% parmarginnote() %}
+{% <parmarginnote> %}
 Nearly-equalizing Reward Distributions
-{% end %}
+{% </parmarginnote> %}
 
 In non-adversarial settings with a sufficiently-rich feedback function `$\sigma$`, we cannot expect to find an equalizing reward distribution.
 The problem is that `$r\sim q$` is sampled once at the beginning, which means it will be possible for the algorithm to learn at least something from the data.
 But, we can instead find a *nearly-equalizing* distribution, and try to quantify how much it was possible to learn.
 This leads to the following general principle for deriving lower bounds:
 
-{% callout() %}
+{% <callout> %}
 Sharp lower bounds usually arise from reward distributions `$q$` under which it is difficult for the learner to tell what the optimal action is.
-{% end %}
+{% </callout> %}
 
 This idea can be made precise in many distinct ways, and the guise through which it shows up in a given context can vary significantly depending on its details.
 As a result, we will develop this idea through presenting it in a number of relatively simple cases---though, in doing so, will try to cast as much emphasis on the broader picture as we can.
 We start with the setting that mirrors the preceding one---namely, stochastic online learning.
 
-{% theorem(kind="proposition") %}
+{% <theorem kind="proposition"> %}
 **Proposition 2.36.**
 Consider stochastic online learning under full feedback, with bounded rewards `$\mathcal{R} = \{r : A \to [0,1]\}$` and standard Gaussian noise.
 Define the reward distribution `$q$` according to
@@ -1023,7 +1023,7 @@ $$
 \tag{2.40}
 $$
 ```
-{% end %}
+{% </theorem> %}
 
 The hard distribution is constructed using *random spike rewards* that are all-zero, except for one special action whose reward is `$\Delta$`, where the optimal action is chosen uniformly at random.
 The rewards at each point are the same in expectation at the beginning, and the observations are nearly the same: the reward of the best action differs only a small amount, namely `$\Delta$`, and this is hard to separate from variability.
@@ -1035,7 +1035,7 @@ We used rewards in `$[0,1]$`, rather than `$[-1,1]$` as before, to simplify alge
 
 It turns out that the *exact same* reward distribution `$q$` is also the hard instance for stochastic bandits, with a proof that is similar in spirit, but slightly different in terms of its technical details.
 
-{% theorem(id="prop-bandit-lower-bound", kind="proposition") %}
+{% <theorem id="prop-bandit-lower-bound" kind="proposition"> %}
 **Proposition 2.37.**
 Consider a stochastic multi-armed bandit, with bounded rewards `$\mathcal{R} = \{r : A \to [0,1]\}$` and standard Gaussian noise.
 Define the reward distribution `$q$` according to
@@ -1058,7 +1058,7 @@ $$
 \tag{2.42}
 $$
 ```
-{% end %}
+{% </theorem> %}
 
 For bandits, the argument presented in this chapter goes through Pinsker's inequality, whereas for online learning, it went through Fano's inequality.
 For more details on these and other technical aspects, see the proofs in [Section 2.7](/chapters/decision-making-under-uncertainty/#2-7-deferred-proofs).
@@ -1066,7 +1066,7 @@ For more details on these and other technical aspects, see the proofs in [Sectio
 We now turn to the final example we will work out in detail: stochastic bandits, but where the reward function class only includes functions with some gap `$\Delta>0$`.
 The most important aspect we will see is that this changes the rate.
 
-{% theorem(id="prop-bandit-lower-bound-with-gap", kind="proposition") %}
+{% <theorem id="prop-bandit-lower-bound-with-gap" kind="proposition"> %}
 **Proposition 2.38.**
 Consider a stochastic multi-armed bandit, where the rewards are bounded with a gap, namely
 ```
@@ -1103,7 +1103,7 @@ $$
 \tag{2.45}
 $$
 ```
-{% end %}
+{% </theorem> %}
 
 This reveals that, if our lower bounds are tight, then multi-armed bandits with rewards that have a gap of at least `$\Delta$` are an easier problem class than those which do not have a gap.
 Thus, the function class `$\mathcal{R}$` plays a critical role in controlling problem difficulty.
@@ -1114,7 +1114,7 @@ This concludes our presentation of lower bounds---specifically those for which w
 There are as many lower bound arguments in the literature as there are variations of episodic decision problems and related mathematical constructions, many with a rich and intricate structure.
 There is, however, one more result which we believe deserves presentation, because of how surprising it is.
 
-{% theorem(kind="result", name="Classification of Partial Monitoring Games") %}
+{% <theorem kind="result" name="Classification of Partial Monitoring Games"> %}
 **Result 2.39.**
 Consider an (adversarial) partial monitoring game, with a finite class of bounded but otherwise unstructured rewards `$\mathcal{R} \subset \{r : A \to [-1,1]\}$` with `$|\mathcal{R}|<\infty$`, and assume `$\sigma$` is deterministic.
 Then its difficulty is either:
@@ -1132,7 +1132,7 @@ M(T) = \begin{cases}
 \tag{2.46}
 $$
 ```
-{% end %}
+{% </theorem> %}
 
 We will not formally define what is meant by global and local observability, other than to say that these notions formalize the essence of the question: *must the learner play strictly-suboptimal actions in order to learn what the optimal action is?*
 If not, the game is locally observable.
@@ -1143,7 +1143,7 @@ This result should be seen as a major achievement of the theory of partial monit
 Its main limitation is that it only offers a classification with respect to time, not the number of actions, or properties of the reward function class `$\mathcal{R}$`.
 Nonetheless, we view it as a key mathematical hint that studying episodic decision-making at our level of generality is not hopeless---a hint that suggests a relatively universal understanding ought to be possible.
 
-{{ section() }}
+{{ <section/> }}
 
 ## 2.5. Empirical Benchmarking
 
@@ -1165,7 +1165,7 @@ These include:
 - *Accessibility.* A theoretical result requires a certain degree of mathematical literacy in order to interpret. Benchmarks, in contrast, require one to be able to distinguish good experimental practices from poor ones. Both require a non-trivial degree of skill, but the skills themselves differ.
 - *Reproducibility.* A correct theorem is by definition perfectly reproducible. In contrast, benchmarks have hyperparameters and implementation details, and are typically randomized. It is possible for these factors to influence performance as much as the benchmark or algorithm itself does.
 
-These differences are by no means complete, and we refer the reader to {% cite(keys=["hardt26"], n=[1]) %}Hardt (2026){% end %} for a systematic introduction to machine learning benchmarking, as well as an overview of the properties a well-designed benchmark suite should have.
+These differences are by no means complete, and we refer the reader to {% <cite keys={["hardt26"]} n={[1]}> %}Hardt (2026){% </cite> %} for a systematic introduction to machine learning benchmarking, as well as an overview of the properties a well-designed benchmark suite should have.
 
 ### 2.5.1. Best Practices and Implementation Details for Bayesian Optimization
 
@@ -1173,7 +1173,7 @@ We now discuss several decision-making-specific best practices.
 These help ensure that an empirical benchmark suite provides useful information about an algorithm's performance.
 Where possible, we will relate each best practice back to the theory seen so far, in order to contextualize it and justify the need to use it from first principles.
 
-{% theorem(kind="example", name="Black-box Optimization") %}
+{% <theorem kind="example" name="Black-box Optimization"> %}
 **Example 2.40.**
 An episodic decision problem is called a *black-box optimization problem* if:
 1. The action space is `$A = [0,1]^d$`.
@@ -1181,10 +1181,10 @@ An episodic decision problem is called a *black-box optimization problem* if:
 3. We consider both stochastic and Bayesian variants.
 4. The observation space is `$\Sigma=\mathbb{R}$`.
 5. The feedback function is `$\sigma(r,a)=r(a)$`, without any noise.
-{% end %}
+{% </theorem> %}
 
 *Bayesian optimization* refers to the use of Bayesian algorithms to solve black-box optimization problems and generalizations thereof.
-{% cite(keys=["garnett23"], n=[1]) %}Garnett (2023){% end %} provide a comprehensive treatment of such algorithms, along with the models they are most commonly used with.
+{% <cite keys={["garnett23"]} n={[1]}> %}Garnett (2023){% </cite> %} provide a comprehensive treatment of such algorithms, along with the models they are most commonly used with.
 We start with our most basic recommendation.
 
 **Random search baseline.**
@@ -1225,7 +1225,7 @@ We recommend evaluating these by assessing the model's performance first: if a m
 
 In particular, a Bayesian model's performance can be assessed by considering how accurate its predictions are on a held-out test set.
 Moreover, a model's marginal likelihood, if it can be computed, directly indicates how typical or atypical a model views the data it has seen, which in turn provides a sense of how well the model expects itself to perform.
-For more about Bayesian model evaluation in Gaussian process models, which are the most-common models used in Bayesian optimization, see {% cite(keys=["rasmussen06"], n=[1]) %}Rasmussen and Williams (2006){% end %}.
+For more about Bayesian model evaluation in Gaussian process models, which are the most-common models used in Bayesian optimization, see {% <cite keys={["rasmussen06"]} n={[1]}> %}Rasmussen and Williams (2006){% </cite> %}.
 
 **Normalization.**
 A given algorithm for an episodic decision problem can either be implemented directly according to its equations, or with normalization, defined as follows.
@@ -1251,7 +1251,7 @@ Almost all Bayesian models require computational methods in order to actually ob
 These can involve everything from numerical linear algebra, for instance to solve linear systems arising in Gaussian process models, to optimization and sampling algorithms.
 For each numerical algorithm used, one should consider carefully whether its behavior will change significantly if implemented in 64-bit floating point arithmetic instead of 32-bit arithmetic.
 
-For an introduction to these considerations, we refer the reader to {% cite(keys=["higham96"], n=[1]) %}Higham (1996){% end %}.
+For an introduction to these considerations, we refer the reader to {% <cite keys={["higham96"]} n={[1]}> %}Higham (1996){% </cite> %}.
 At the same time, there are enough algorithms one might use under-the-hood for Bayesian computation, that no single treatment can hope to cover all that one might encounter---especially new or recently-popularized algorithms.
 Thus, we omit further details.
 In practice, one should expect to need to think about the situation at hand, at least a little bit, in every case individually.
@@ -1295,7 +1295,7 @@ We describe our benchmark suite and full experimental details in [Appendix B](/c
 
 🚧 Under construction. 🚧
 
-{{ section() }}
+{{ <section/> }}
 
 ## 2.6. Exercises
 
@@ -1313,7 +1313,7 @@ The purpose here is to learn how the mathematical ideas map onto software, and g
 You should take a central role in designing your package's structure, abstractions, and interface, and think carefully about how to make them as clean as possible.
 You should hand over low-level numerical details to AI, and then verify that they are implemented correctly.
 
-{% theorem(kind="exercise") %}
+{% <theorem kind="exercise"> %}
 **2.1 (Simple vs. Cumulative Regret).**
 In this exercise, you will study the relationship between simple and cumulative regret.
 Construct a pair of algorithms, which are allowed to depend on the time horizon `$T$`, where, respectively:
@@ -1340,9 +1340,9 @@ For `$T\geq2$`, show that:
     ```
 
 In doing so, you might find it helpful to work with the *time-horizon-weighted simple regret*, defined as `$t\cdot r_t(p,r)$`.
-{% end %}
+{% </theorem> %}
 
-{% theorem(kind="exercise") %}
+{% <theorem kind="exercise"> %}
 **2.2 (Budget-constrained Regret).**
 In this exercise, you will define another variant of an episodic decision problem, together with an associated form of regret.
 To do so, write down formal definitions for each of the following steps:
@@ -1357,9 +1357,9 @@ To do so, write down formal definitions for each of the following steps:
 
 For the last step, you are welcome to rely on informal reasoning: making this step fully precise and correct, in cases where it is possible, is more difficult than it looks.
 The problem is that a very careful handling of tie-breaking rules may be needed to ensure that an appropriate Lagrange Multiplier Theorem actually holds with equality.
-{% end %}
+{% </theorem> %}
 
-{% theorem(kind="exercise") %}
+{% <theorem kind="exercise"> %}
 **2.3 (Research as an Episodic Decision Problem).**
 In this exercise, your goal will be to show that the process of studying the mathematical properties of an episodic decision problem can itself be viewed as an episodic decision problem.
 Assume that we have an episodic decision problem, together with a collection of `$N$` algorithms for solving that problem.
@@ -1368,18 +1368,18 @@ Then:
 2. Formally define a reward function class which maps each algorithm to its overall *ground-truth rank*, where the best algorithm is ranked first, the worst algorithm is ranked last, and the rank is assumed to depend only on the algorithm. What properties must the reward function class satisfy?
 3. Formally define an observation space and feedback function which describes the output produced when a given algorithm is tested. Describe the relationship between the types of benchmarks and the algorithm's ground-truth rank.
 4. Describe the tradeoffs between explore and exploit which occur in your setup. How would you expect these to change, intuitively speaking, if a cost function class was added in, so that benchmarks were split into cheap-but-noisy and expensive-but-accurate options?
-{% end %}
+{% </theorem> %}
 
-{% theorem(kind="exercise") %}
+{% <theorem kind="exercise"> %}
 **2.4.**
 Build a library using your favorite machine learning programming framework for black-box global optimization benchmarking.
 To do so:
 1. Implement at least the *Ackley*, *Levy*, and *Rosenbrock* functions, whose expressions are given in [Appendix B](/chapters/appendix/#b-benchmarking-details).
 2. Invent and implement at least one original benchmark objective function. How easy or difficult do you expect this objective function to be?
 3. Implement and test the random search algorithm on these benchmarks. How well does it do, in terms of regret?
-{% end %}
+{% </theorem> %}
 
-{% theorem(kind="exercise") %}
+{% <theorem kind="exercise"> %}
 **2.5.**
 Find a library built on top of your favorite machine learning programming framework which supports Bayesian learning via Gaussian process models, or any other model class of your choice.
 To prepare for exercises in future chapters, which will involve implementing Bayesian optimization under various acquisition functions, you will implement the abstractions needed to run a decision-making loop.
@@ -1390,23 +1390,23 @@ To do so:
 
 You are encouraged to complete this exercise only partially, and return to it as you read further chapters and learn about actual algorithms and acquisition functions.
 These will make it more clear how to organize your code cleanly.
-{% end %}
+{% </theorem> %}
 
-{% theorem(id="ex-blackwell-informativeness-theorem", kind="exercise") %}
+{% <theorem id="ex-blackwell-informativeness-theorem" kind="exercise"> %}
 **2.6.**
 Modify the proof of [Theorem 2.23](/chapters/decision-making-under-uncertainty/#thm-blackwell-informativeness) to relax the finiteness assumptions on `$A$` and `$\Sigma$`, replacing them with the most general notions you have command over. *Hint:* at minimum, we recommend taking `$A$`, `$\Sigma$`, and `$\mathcal{R}$` to be Polish topological spaces, with `$A$` and `$\Sigma$` compact, `$\mathcal{R}$` consisting of uniformly bounded functions, all relevant functions assumed measurable, and, if needed, garblings allowed to depend on the prior `$q$`. If the preceding notions are unfamiliar or difficult, try with `$A$` finite, `$\Sigma = [0,1]$`, and where `$\sigma$` admits a continuous Lebesgue density.
-{% end %}
+{% </theorem> %}
 
-{% theorem(id="ex-bandit-lower-bound-with-gap", kind="exercise") %}
+{% <theorem id="ex-bandit-lower-bound-with-gap" kind="exercise"> %}
 **2.7.**
 Prove [Proposition 2.38](/chapters/decision-making-under-uncertainty/#prop-bandit-lower-bound-with-gap). *Hint:* consider first learning the proof of [Proposition 2.37](/chapters/decision-making-under-uncertainty/#prop-bandit-lower-bound), which is similar. The main difference you should expect is that the argument's core will involve the Bretagnolle--Huber inequality instead of Pinsker's inequality.
-{% end %}
+{% </theorem> %}
 
-{{ section() }}
+{{ <section/> }}
 
 ## 2.7. Deferred Proofs
 
-{% theorem(id="thm-blackwell-informativeness-restate", kind="theorem") %}
+{% <theorem id="thm-blackwell-informativeness-restate" kind="theorem"> %}
 **Theorem 2.23.**
 Let `$\sigma_1 : \mathcal{R} \times A \to \mathcal{M}_1(\Sigma)$` and `$\sigma_2 : \mathcal{R} \times A \to \mathcal{M}_1(\Sigma)$` be two feedback functions, where `$A$` and `$\Sigma$` are assumed finite.
 Then the following are equivalent:
@@ -1415,11 +1415,11 @@ Then the following are equivalent:
 3. Under the same quantifiers as in the first point, the set of feasible action-sequence distributions is larger under `$\sigma_1$` than `$\sigma_2$`, in the sense `$\Lambda_2 \subseteq \Lambda_1$`.
 
 As consequence, one can define the *Blackwell order* `$\preceq$` over feedback functions, which forms a partial order, up to an equivalence.
-{% end %}
+{% </theorem> %}
 
-{% proof() %}
+{% <proof> %}
 *Proof.*
-Our argument loosely follows {% cite(keys=["deoliveira18"], n=[1]) %}De Oliveira (2018, Theorem 5){% end %}, but is adapted to the sequential setting and formalism used by this book.
+Our argument loosely follows {% <cite keys={["deoliveira18"]} n={[1]}> %}De Oliveira (2018, Theorem 5){% </cite> %}, but is adapted to the sequential setting and formalism used by this book.
 We will proceed by proving a circular chain of implications `$1 \Rightarrow 2 \Rightarrow 3 \Rightarrow 1$` for the three characterizations.
 Before diving into the technical details, it is worth briefly noting why each implication ought to hold:
 1. `$1\Rightarrow 2$`: arguing by contrapositive, if no garbling exists, then `$\sigma_1$` provides genuinely different information compared to `$\sigma_2$`, so picking a reward that depends on that information leads to the opposite inequality on optimal values compared to what was assumed.
@@ -1645,9 +1645,9 @@ $$
 ```
 Using this representation, the desired implication follows by relaxing the supremum defining `$V^*_{\operatorname{MDP},\sigma'_2}$` from `$\Lambda_{\sigma'_2}$` to `$\Lambda_{\sigma'_1}$`, obtaining `$V^*_{\operatorname{MDP},\sigma'_1}$`.
 Part III follows.
-{% end %}
+{% </proof> %}
 
-{% theorem(kind="proposition") %}
+{% <theorem id="prop-expected-value-lower-bound-restate" kind="proposition"> %}
 **Proposition 2.27.**
 Consider a stochastic multi-armed bandit, with `$|A|\geq 2$`, bounded rewards `$\mathcal{R} = \{r : A \to [0,1]\}$`, and standard Gaussian noise.
 Let the Bayesian model consist of a standard Gaussian prior on the rewards, along with a conjugate unit-variance Gaussian likelihood.
@@ -1659,9 +1659,9 @@ R_T(p_{\operatorname{EV}},r) = \Omega(T)
 \tag{2.68}
 $$
 ```
-{% end %}
+{% </theorem> %}
 
-{% proof() %}
+{% <proof> %}
 *Proof.*
 To begin, we remind ourselves what the algorithm is doing: the posterior distribution for a given action is
 ```
@@ -1741,9 +1741,9 @@ $$
 ```
 which, since `$\operatorname{\mathbb{P}}(U) \geq \frac{7}{10}\Phi(-3)$`, is `$\Omega(T)$`.
 The claim follows.
-{% end %}
+{% </proof> %}
 
-{% theorem(kind="proposition") %}
+{% <theorem kind="proposition"> %}
 **Proposition 2.35.**
 Consider adversarial online learning under full feedback, with bounded rewards `$\mathcal{R} = \{r : A \to [-1,1]\}$` and no noise.
 Define the reward distribution `$q$` to be independent Rademacher across time and actions, namely
@@ -1762,12 +1762,12 @@ $$
 \tag{2.79}
 $$
 ```
-{% end %}
+{% </theorem> %}
 
-{% proof() %}
+{% <proof> %}
 *Proof.*
-There are many variations of the argument presented here known within the literature's folklore: the one we give is essentially a specialization of {% cite(keys=["orabona26"], n=[1]) %}Orabona (2026, Theorem 5.1 and Theorem 5.3){% end %}, to our setting---which, themselves, are a sharpened form of {% cite(keys=["orabona15"], n=[1]) %}Orabona and Pál (2015, Theorem 8){% end %}.
-For an alternative argument, see for instance {% cite(keys=["negrea21"], n=[1]) %}Negrea et al. (2021, Appendix C){% end %}.
+There are many variations of the argument presented here known within the literature's folklore: the one we give is essentially a specialization of {% <cite keys={["orabona26"]} n={[1]}> %}Orabona (2026, Theorem 5.1 and Theorem 5.3){% </cite> %}, to our setting---which, themselves, are a sharpened form of {% <cite keys={["orabona15"]} n={[1]}> %}Orabona and Pál (2015, Theorem 8){% </cite> %}.
+For an alternative argument, see for instance {% <cite keys={["negrea21"]} n={[1]}> %}Negrea et al. (2021, Appendix C){% </cite> %}.
 Our strategy will be to apply various binomial probability estimates, including a tail bound, and we begin by rewriting the regret into a form amenable to this.
 Note first that
 ```
@@ -1863,7 +1863,7 @@ R_T(p,q) &\overset{\mathrel{\text{(i)}}}{\geq} T - \frac{\sqrt{T}}{2^N} - 2 q_0 
 $$
 ```
 where for (i) we have picked a threshold `$q_0\in\mathbb{N}$`, and used monotonicity to bound the first `$q_0$` terms in the sum by `$\operatorname{\mathbb{P}}\left( b_{1,T} < \frac{T}{2}+q_0 \right)$`, while bounding the remaining `$\frac{T}{2} - q_0$` probabilities in the sum by one, and for (ii) we have used the inequality `$1 - (1-x)^N \geq 1 - e^{-Nx}$`.
-We now apply the tail bound of {% cite(keys=["orabona26"], n=[2]) %}Orabona (2026, Lemma A.17){% end %}, whose hypotheses are satisfied because `$T$` is even and `$q_0 \leq T/2 - 1$`, and which tells us that
+We now apply the tail bound of {% <cite keys={["orabona26"]} n={[2]}> %}Orabona (2026, Lemma A.17){% </cite> %}, whose hypotheses are satisfied because `$T$` is even and `$q_0 \leq T/2 - 1$`, and which tells us that
 ```
 $$
 \begin{align}
@@ -1875,7 +1875,7 @@ $$
 \end{align}
 $$
 ```
-where the second form follows more-or-less by Taylor-expanding the respective Kullback--Leibler divergence between Bernoulli distributions: see the final line of the proof given in {% cite(keys=["orabona26"], n=[3]) %}Orabona (2026, Theorem 5.5){% end %}.
+where the second form follows more-or-less by Taylor-expanding the respective Kullback--Leibler divergence between Bernoulli distributions: see the final line of the proof given in {% <cite keys={["orabona26"]} n={[3]}> %}Orabona (2026, Theorem 5.5){% </cite> %}.
 Continuing the algebra, we get
 ```
 $$
@@ -1900,9 +1900,9 @@ R_T(p,q) \geq \frac{13}{20}\left( \sqrt{\frac{T\log N}{2}} - 2 \right) - \frac{1
 $$
 ```
 which gives the claim.
-{% end %}
+{% </proof> %}
 
-{% theorem(kind="proposition") %}
+{% <theorem kind="proposition"> %}
 **Proposition 2.36.**
 Consider stochastic online learning under full feedback, with bounded rewards `$\mathcal{R} = \{r : A \to [0,1]\}$` and standard Gaussian noise.
 Define the reward distribution `$q$` according to
@@ -1925,9 +1925,9 @@ $$
 \tag{2.101}
 $$
 ```
-{% end %}
+{% </theorem> %}
 
-{% proof() %}
+{% <proof> %}
 *Proof.*
 To improve readability, we prove a mild generalization where the noise has variance `$\varsigma^2$`.
 Note first that `$\Delta \leq 1$` by assumption, thus the statement itself makes sense.
@@ -1983,9 +1983,9 @@ R_T(p,q) = \sum_{t=1}^T \Delta \operatorname{\mathbb{P}}(a_t\neq\alpha) \geq \fr
 $$
 ```
 The claim follows by setting `$\varsigma^2=1$`.
-{% end %}
+{% </proof> %}
 
-{% theorem(id="prop-bandit-lower-bound-restate", kind="proposition") %}
+{% <theorem id="prop-bandit-lower-bound-restate" kind="proposition"> %}
 **Proposition 2.37.**
 Consider a stochastic multi-armed bandit, with bounded rewards `$\mathcal{R} = \{r : A \to [0,1]\}$` and standard Gaussian noise.
 Define the reward distribution `$q$` according to
@@ -2008,9 +2008,9 @@ $$
 \tag{2.109}
 $$
 ```
-{% end %}
+{% </theorem> %}
 
-{% proof() %}
+{% <proof> %}
 *Proof.*
 Similar to above, we prove a mild generalization where the noise has variance `$\varsigma^2$`.
 Given `$\alpha$`, define `$n_\alpha(t)$` to be the number of times the arm corresponding to `$\alpha$` is pulled up to time `$t$`.
@@ -2106,9 +2106,9 @@ R_T(\cdot , q) \geq \frac{\varsigma\sqrt{KT}}{4} - \frac{\varsigma\sqrt{KT}}{8} 
 \tag{2.123}
 $$
 ```
-{% end %}
+{% </proof> %}
 
-{% theorem(id="prop-bandit-lower-bound-with-gap-restate", kind="proposition") %}
+{% <theorem id="prop-bandit-lower-bound-with-gap-restate" kind="proposition"> %}
 **Proposition 2.38.**
 Consider a stochastic multi-armed bandit, where the rewards are bounded with a gap, namely
 ```
@@ -2145,15 +2145,15 @@ $$
 \tag{2.126}
 $$
 ```
-{% end %}
+{% </theorem> %}
 
-{% proof() %}
+{% <proof> %}
 *Proof.*
 [Exercise 2.7](/chapters/decision-making-under-uncertainty/#ex-bandit-lower-bound-with-gap).
-{% end %}
+{% </proof> %}
 
-{{ section() }}
+{{ <section/> }}
 
 ## References
 
-{{ references(bibfile="static/md/BDMA.bib", keys=["blackwell51", "blackwell53", "deoliveira18", "foster23", "garnett23", "hardt26", "higham96", "jaynes03", "lecam86", "negrea21", "orabona26", "orabona15", "rasmussen06"], counts=[2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 1]) }}
+{{ <references bibfile="static/md/BDMA.bib" keys={["blackwell51", "blackwell53", "deoliveira18", "foster23", "garnett23", "hardt26", "higham96", "jaynes03", "lecam86", "negrea21", "orabona26", "orabona15", "rasmussen06"]} counts={[2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 1]}/> }}

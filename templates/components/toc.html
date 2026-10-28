@@ -1,0 +1,59 @@
+{#
+Rendering the table of contents from within markdown content is not possible
+using a component alone, because Zola templates content before populating the
+section's list of pages, so get_section sees no pages there. To handle this,
+the table_of_contents component inserts only a placeholder div, and this
+component splits the rendered content on that placeholder and splices the
+rendered table of contents into its place. This is a simplified single-marker
+variant of the workaround used in the Academic Workshop theme's
+macros/list.html, which additionally carries a section name through paired
+markers: here there is only one chapters section, so no parameters are needed.
+It would be great to rewrite this in a simpler way if future Zola or Tera
+changes make it possible without workarounds.
+#}
+{% component toc(content, @config) -%}
+{% set parts = content | split(pat = '<div table-of-contents></div>') %}
+{% for part in parts %}
+    {{ part | safe }}
+    {% if loop.first and not loop.last %}
+        {% set chapters = get_section(path = "chapters/_index.md") %}
+        <ol>
+            {% for chapter in chapters.pages %}
+                {% set prefix = chapter.relative_path | split(pat = "/") | last | split(pat = "-") | first %}
+                {% set number = prefix | int if prefix is matching(pat = "^[0-9]+$") else 0 %}
+                <li class="my-4 pl-2{% if number == 0 %} list-unstyled{% endif %}" {% if number > 0 %}value="{{ number }}"{% endif %}>
+                    <h2 class="h4 mt-0 mb-1">
+                        <a href="{{ chapter.path | safe }}">{{ chapter.title }}</a>
+                    </h2>
+                    {% if chapter.toc %}
+                        {% set_global sections = chapter.toc | first | get(key = "children") %}
+                    {% else %}
+                        {% set_global sections = [] %}
+                    {% endif %}
+                    {% if sections and number > 0 %}
+                        <details>
+                            <summary class="n:icon" aria-label="Sections of {{ chapter.title }}"></summary>
+                            <ol class="mb-2 pl-0">
+                                {% for section in sections %}
+                                    {% if section.id != "references" and section.id != "footnotes" %}
+                                        <li class="my-0"><a href="{{ chapter.path | safe }}#{{ section.id }}">{{ section.title | regex_replace(pattern = '^[0-9A-Z][0-9A-Z.]*\\.\\s+', rep = '') }}</a></li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ol>
+                        </details>
+                    {% endif %}
+                    {% if config.extra.pdf %}
+                        <div class="btn-group" role="group" aria-label="Formats">
+                            <a class="btn" href="{{ chapter.path | safe }}">HTML</a>
+                            <a class="btn" href="{{ (get_url(path = config.extra.pdf) ~ '#page=' ~ chapter.extra.page) | safe }}">PDF</a>
+                        </div>
+                    {% endif %}
+                    {% if chapter.description %}
+                        <p>{{ chapter.description | markdown(inline = true) | safe }}</p>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ol>
+    {% endif %}
+{% endfor %}
+{%- endcomponent toc %}

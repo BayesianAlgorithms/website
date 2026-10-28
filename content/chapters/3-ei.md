@@ -8,17 +8,16 @@ page = 63
 +++
 
 # Expected Improvement
-
 🚧 Under construction. Headings indicate planned content. 🚧
 
-{{ section() }}
+{{ <section first={true}/> }}
 
 ## 3.1. Bayesian Dynamic Programming
 
-{{ section() }}
+{{ <section/> }}
 
 ## 3.2. Algorithms via One-step Approximations
 
-{{ section() }}
+{{ <section/> }}
 
 ## 3.3. General Feedback and Expected Utility Improvement

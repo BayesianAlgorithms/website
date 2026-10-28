@@ -11,10 +11,10 @@ page = 67
 
 🚧 Under construction. Headings indicate planned content. 🚧
 
-{{ section() }}
+{{ <section first={true}/> }}
 
 ## 5.1. Upper Confidence Bounds
 
-{{ section() }}
+{{ <section/> }}
 
 ## 5.2. Classical Algorithms as Instances of Optimism

@@ -11,14 +11,14 @@ page = 71
 
 🚧 Under construction. Headings indicate planned content. 🚧
 
-{{ section() }}
+{{ <section first={true}/> }}
 
 ## 7.1. Concentration-based Analysis
 
-{{ section() }}
+{{ <section/> }}
 
 ## 7.2. Adversarial Analysis
 
-{{ section() }}
+{{ <section/> }}
 
 ## 7.3. Exploration in Large Language Models

@@ -1,4 +1,4 @@
-{% macro seo(page, markdown='', ld_json_type='WebPage', og_type='website', ld_json_extra='') %}
+{% component seo(page, markdown = "", ld_json_type = "WebPage", og_type = "website", ld_json_extra = "", @config) -%}
 {% set url = get_url(path = page.path, trailing_slash = true) %}
 {% set card_url = get_url(path = 'card.png') %}
 {% set card_metadata = get_image_metadata(path = 'card.png', allow_missing = true) %}
@@ -30,4 +30,4 @@
 {% endif %}
 <meta name="twitter:title" content="{{ page.title | default(value = config.title) }}">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"{{ ld_json_type }}","author":{"@type":"Person","name":"{{ config.author }}"},{% if page.description %}"description":{{ description | json_encode | safe }},{% endif %}"headline":"{{ page.title | default(value = config.title) }}",{% if card_metadata %}"image":"{{ card_url | safe }}",{% endif %}{{ ld_json_extra | safe }}"url":"{{ url | safe }}"}</script>
-{% endmacro %}
+{%- endcomponent seo %}

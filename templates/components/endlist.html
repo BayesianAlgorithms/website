@@ -7,4 +7,5 @@ comment also ends the inner list, since it can interrupt a paragraph, while
 keeping the list tight; the minifier removes it from the output. The rendered
 output must be exactly the comment, with no newline on either side, which
 the surrounding whitespace control ensures.
--#}<!-- -->{#- -#}
+-#}
+{% component endlist() -%}<!-- -->{%- endcomponent endlist %}

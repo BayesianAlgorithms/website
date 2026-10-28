@@ -8,7 +8,7 @@ page = 11
 
 # Notation
 
-{{ section() }}
+{{ <section first={true}/> }}
 
 ## General
 
@@ -28,7 +28,7 @@ page = 11
 | `$\Omega(\cdot )$` | Asymptotic lower bound |
 | `$\Theta(\cdot )$` | Asymptotic upper and lower bound |
 
-{{ section() }}
+{{ <section/> }}
 
 ## Probability
 
@@ -50,7 +50,7 @@ page = 11
 | `$D_{\operatorname{KL}}(\cdot \mid\mid\cdot )$` | Kullback--Leibler divergence | [A.2](/chapters/appendix/#a-2-information-theory) |
 | `$I(\cdot ;\cdot )$` | Mutual information | [A.2](/chapters/appendix/#a-2-information-theory) |
 
-{{ section() }}
+{{ <section/> }}
 
 ## Markov Decision Processes
 
@@ -68,7 +68,7 @@ page = 11
 | `$V^*(\cdot )$` | Optimal value function | [A.3](/chapters/appendix/#a-3-markov-decision-processes) |
 | `$\pi^*$` | Optimal policy | [A.3](/chapters/appendix/#a-3-markov-decision-processes) |
 
-{{ section() }}
+{{ <section/> }}
 
 ## Episodic Decision Problems
 
@@ -93,7 +93,7 @@ page = 11
 | `$V^*_{\operatorname{MDP}}$` | Optimal value of the underlying MDP of a Bayesian variant | [2.3](/chapters/decision-making-under-uncertainty/#2-3-evaluating-performance-via-regret) |
 | `$\preceq$` | Blackwell order over feedback functions | [2.3](/chapters/decision-making-under-uncertainty/#2-3-evaluating-performance-via-regret) |
 
-{{ section() }}
+{{ <section/> }}
 
 ## Bayesian Models and Algorithms
 

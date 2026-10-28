@@ -11,10 +11,10 @@ page = 69
 
 🚧 Under construction. Headings indicate planned content. 🚧
 
-{{ section() }}
+{{ <section first={true}/> }}
 
 ## 6.1. Entropy Search
 
-{{ section() }}
+{{ <section/> }}
 
 ## 6.2. Bayesian Algorithm Execution

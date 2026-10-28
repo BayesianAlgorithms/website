@@ -10,7 +10,7 @@ page = 75
 
 🚧 Under construction. Headings indicate planned content. 🚧
 
-{{ section() }}
+{{ <section first={true}/> }}
 
 ## A. Mathematical Background
 
@@ -20,6 +20,6 @@ page = 75
 
 ### A.3. Markov Decision Processes
 
-{{ section() }}
+{{ <section/> }}
 
 ## B. Benchmarking Details

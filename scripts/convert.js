@@ -27,7 +27,7 @@ const labels = {};
 // command line arguments, followed by the chapter files in book order, which
 // determines the pages' weights. Bibliography entries are keyed by citation
 // key and parsed minimally: only the fields citations in running text need,
-// since the reference list itself is rendered by the references shortcode,
+// since the reference list itself is rendered by the references component,
 // which reads the bib file through Zola's load_data. Unresolved keys render
 // bold, mirroring the print draft.
 const USAGE = 'usage: convert.js <bibfile> <pagesfile> <outdir> <chapters...>';
@@ -48,7 +48,7 @@ const pages = new Map(fs.readFileSync(pagesfile, {encoding: 'utf8'}).trim().spli
     return [line.slice(0, i), parseInt(line.slice(i + 1), 10)];
 }));
 // the bib is copied into static, where Zola both serves it verbatim for
-// machine readers and reads it through the references shortcode's
+// machine readers and reads it through the references component's
 // load_data, which needs an in-tree path
 const bibfile = 'static/md/BDMA.bib';
 const bibdest = path.resolve(outdir, '..', '..', bibfile);
@@ -100,7 +100,7 @@ const BLOCK_RULES = [
             s.add(s.ref);
         }],
 
-    // \section becomes a heading, with the section() shortcode marking the
+    // \section becomes a heading, with the section component marking the
     // section boundary for the menu scrollspy
     ['document', /^\\section\{(.*)\}$/,
         (m, s) => {
@@ -255,21 +255,21 @@ const BLOCK_RULES = [
             if (node.macro) s.restatables[node.macro] = node;
         }],
 
-    // callouts become the callout shortcode, with the star mark and the
+    // callouts become the callout component, with the star mark and the
     // emphasized body style supplied by the site's CSS
     ['document', /^\\begin\{callout\}$/,
-        (m, s) => s.add({t: 'open', lines: ['{% callout() %}']})],
+        (m, s) => s.add({t: 'open', lines: ['{% <callout> %}']})],
     ['document', /^\\end\{callout\}$/,
-        (m, s) => s.add({t: 'close'})],
+        (m, s) => s.add({t: 'close', name: 'callout'})],
 
-    // proofs become the proof shortcode with an italic run-in head, and the
+    // proofs become the proof component with an italic run-in head, and the
     // site's CSS supplies the tombstone at the end of the proof
     ['document', /^\\begin\{proof\}$/,
-        (m, s) => s.add({t: 'open', lines: ['{% proof() %}', '*Proof.*']})],
+        (m, s) => s.add({t: 'open', lines: ['{% <proof> %}', '*Proof.*']})],
     ['document', /^\\end\{proof\}$/,
-        (m, s) => s.add({t: 'close'})],
+        (m, s) => s.add({t: 'close', name: 'proof'})],
 
-    // figures become the figure shortcode with a numbered caption, keeping
+    // figures become the figure component with a numbered caption, keeping
     // only the caption and any included graphic, whose pdf name in the TeX
     // maps to a same-named svg placed by hand in the static figures directory
     ['document', /^\\begin\{figure\*?\}/,
@@ -308,7 +308,7 @@ const BLOCK_RULES = [
         (m, s) => listItem(m[1], m[2], m[3], m[4], s)],
 
     // \0 closes the innermost list, which must therefore exist; closing a
-    // nested list emits the endlist shortcode at the outer item's depth,
+    // nested list emits the endlist component at the outer item's depth,
     // which ends the inner list without the blank line that would make the
     // outer list loose
     ['document', /^\\0\*?$/,
@@ -316,7 +316,7 @@ const BLOCK_RULES = [
             if (s.lists.length === 0) throw new Error(`${s.file}:${s.lineNo}: \\0 without an open list`);
             s.lists.pop();
             if (s.lists.length === 0) s.add({t: 'blank'});
-            else s.add({t: 'text', line: '{{ endlist() }}', indent: s.lists.length, no: s.lineNo});
+            else s.add({t: 'text', line: '{{ <endlist/> }}', indent: s.lists.length, no: s.lineNo});
         }],
 
     // \vfill is print-page spacing, which the web layout has no analog of
@@ -403,8 +403,9 @@ function inline(line, e) {
     let i;
     while ((i = line.indexOf('\\footnote{')) !== -1) {
         const close = matchBrace(line, i + 9, e);
-        e.footnotes.push(['{% footnote() %}', inline(line.substring(i + 10, close), e), '{% end %}']);
-        line = line.slice(0, i) + '{{ footnote_ref() }}' + line.slice(close + 1);
+        const n = ++e.fn;
+        e.footnotes.push([`{% <footnote n={${n}}> %}`, inline(line.substring(i + 10, close), e), '{% </footnote> %}']);
+        line = line.slice(0, i) + `{{ <footnote_ref n={${n}}/> }}` + line.slice(close + 1);
     }
     line = line.replace(/\\[cC]ref\{([^}]*)\}/g, (m0, keys) => keys.split(',').map(key => {
         const label = labels[key.trim()];
@@ -433,7 +434,7 @@ function inline(line, e) {
             });
             const list = items => `[${items.join(', ')}]`;
             const text = `${who} (${works.map(w => w.entry.year).join(', ')}${note ? ', ' + note : ''})`;
-            return `{% cite(keys=${list(works.map(w => `"${w.key}"`))}, n=${list(ns)}) %}${text}{% end %}`;
+            return `{% <cite keys={${list(works.map(w => `"${w.key}"`))}} n={${list(ns)}}> %}${text}{% </cite> %}`;
         }).join(', ');
     });
     const stash = [];
@@ -662,6 +663,11 @@ function flushPending(e) {
     e.footnotes = [];
 }
 
+// Opens a section, closing the previous one unless this is the page's first
+function sectionTag(e) {
+    return e.sections++ === 0 ? '{{ <section first={true}/> }}' : '{{ <section/> }}';
+}
+
 // The serializers of the emit pass, one per node type, each producing the
 // node's Markdown through the emit context, which collapses blank runs and
 // carries the per-emission counters.
@@ -678,7 +684,7 @@ const SERIALIZERS = {
     },
     section: (node, e) => {
         e.blank();
-        e.emit('{{ section() }}', '', `## ${node.number ? node.number + '. ' : ''}${inline(node.title, e)}`);
+        e.emit(sectionTag(e), '', `## ${node.number ? node.number + '. ' : ''}${inline(node.title, e)}`);
         e.blank();
     },
     subsection: (node, e) => {
@@ -713,10 +719,10 @@ const SERIALIZERS = {
         ];
         const head = exercise ? node.number : `${node.refKind} ${node.number}`;
         const note = exercise && node.name ? ` (${inline(node.name, e)})` : '';
-        e.emit(`{% theorem(${args.join(', ')}) %}`, `**${head}${note}.**`);
+        e.emit(`{% <theorem ${args.join(' ')}> %}`, `**${head}${note}.**`);
         node.body.forEach(child => SERIALIZERS[child.t](child, e));
         e.trim();
-        e.emit('{% end %}');
+        e.emit('{% </theorem> %}');
         e.blank();
     },
     open: (node, e) => {
@@ -725,13 +731,13 @@ const SERIALIZERS = {
     },
     close: (node, e) => {
         e.trim();
-        e.emit('{% end %}');
+        e.emit(`{% </${node.name}> %}`);
         e.blank();
     },
     figure: (node, e) => {
-        const id = node.id ? `id="${node.id}", ` : '';
+        const id = node.id ? `id="${node.id}" ` : '';
         e.blank();
-        e.emit(`{% figure(${id}src="${node.src ?? ''}", alt="Figure ${node.number}", dark_invert=true) %}`, `**Figure ${node.number}.** ${inline(node.caption, e)}`, '{% end %}');
+        e.emit(`{% <figure ${id}src="${node.src ?? ''}" alt="Figure ${node.number}" dark_invert={true}> %}`, `**Figure ${node.number}.** ${inline(node.caption, e)}`, '{% </figure> %}');
         e.blank();
     },
     // rows render as a GFM table; alignment is left to the site's CSS
@@ -767,7 +773,7 @@ const SERIALIZERS = {
     },
     marginnote: (node, e) => {
         e.paraStart ??= e.out.length;
-        e.notes.push(['{% parmarginnote() %}', inline(node.text, e), '{% end %}']);
+        e.notes.push(['{% <parmarginnote> %}', inline(node.text, e), '{% </parmarginnote> %}']);
     },
     text: (node, e) => {
         e.paraStart ??= e.out.length;
@@ -784,6 +790,8 @@ function emitFile(s) {
         chapter: s.chapter,
         lineNo: 0,
         eq: 0,
+        fn: 0,
+        sections: 0,
         notes: [],
         footnotes: [],
         paraStart: null,
@@ -801,10 +809,9 @@ function emitFile(s) {
     if (e.cited.size > 0) {
         e.blank();
         const keys = [...e.cited.keys()].sort((a, b) => bib[a].authors[0].localeCompare(bib[b].authors[0]));
-        e.emit('{{ section() }}', '', '## References', '', `{{ references(bibfile="${bibfile}", keys=[${keys.map(k => `"${k}"`).join(', ')}], counts=[${keys.map(k => e.cited.get(k)).join(', ')}]) }}`);
+        e.emit(sectionTag(e), '', '## References', '', `{{ <references bibfile="${bibfile}" keys={[${keys.map(k => `"${k}"`).join(', ')}]} counts={[${keys.map(k => e.cited.get(k)).join(', ')}]}/> }}`);
     }
-    const fn = e.out.filter(l => l.includes('{% footnote() %}')).length;
-    if (fn > 5) throw new Error(`${s.file}: ${fn} footnotes exceed the $footnote-count hover rules in _sidenotes.scss`);
+    if (e.fn > 5) throw new Error(`${s.file}: ${e.fn} footnotes exceed the $footnote-count hover rules in _site.scss`);
     const page = pages.get(s.title);
     if (page === undefined) throw new Error(`${s.file}: chapter "${s.title}" not found in ${pagesfile}, which may be stale`);
     const frontMatter = [

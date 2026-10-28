@@ -1,9 +1,7 @@
-{% import 'macros/seo.html' as seo %}
-{% import 'macros/toc.html' as toc %}
 {% extends "default.html" %}
 
 {% block seo %}
-{{ seo::seo(page = section, markdown = 'llms.txt', ld_json_type = 'Book', og_type = 'book') }}
+{{ <seo page={section} markdown="llms.txt" ld_json_type="Book" og_type="book"/> }}
 {% endblock %}
 
 {% block main %}
@@ -25,7 +23,7 @@
         </header>
 
         <div class="i:content">
-            {{ toc::insert(content = section.content) }}
+            {{ <toc content={section.content}/> }}
         </div>
 
         {% if config.extra.footer_text %}

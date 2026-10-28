@@ -1,0 +1,5 @@
+{% component footnote(n) -%}
+<aside class="footnote" id="fn-{{ n }}">
+{{ body | markdown(inline = true) | safe }}
+</aside>
+{%- endcomponent footnote %}

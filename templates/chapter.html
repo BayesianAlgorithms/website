@@ -1,17 +1,17 @@
-{% import 'macros/seo.html' as seo %}
 {% extends "default.html" %}
 
 {% block seo %}
 {% set ld_json_extra = '"isPartOf":{"@type":"Book","name":"' ~ config.title ~ '","url":"' ~ config.base_url ~ '"},' %}
 {% set md_file = page.relative_path | split(pat = "/") | last %}
 {% if page.slug != "preface" %}{% set markdown = "md/" ~ md_file %}{% else %}{% set markdown = "" %}{% endif %}
-{{ seo::seo(page = page, markdown = markdown, ld_json_type = 'Chapter', og_type = 'article', ld_json_extra = ld_json_extra) }}
+{{ <seo page={page} markdown={markdown} ld_json_type="Chapter" og_type="article" ld_json_extra={ld_json_extra}/> }}
 {% endblock %}
 
 {% block main %}
 <main aria-label="Content">
     
-    {% set number = page.relative_path | split(pat = "/") | last | split(pat = "-") | first | int(default = 0) %}
+    {% set prefix = page.relative_path | split(pat = "/") | last | split(pat = "-") | first %}
+    {% set number = prefix | int if prefix is matching(pat = "^[0-9]+$") else 0 %}
 
     <div class="container c:container">
         <nav class="n:menu" aria-label="Chapters">
@@ -34,7 +34,8 @@
             <ol class="list-unstyled">
                 {% for chapter in chapters.pages %}
                     {% set current = chapter.path == page.path %}
-                    {% set chapter_number = chapter.relative_path | split(pat = "/") | last | split(pat = "-") | first | int(default = 0) %}
+                    {% set chapter_prefix = chapter.relative_path | split(pat = "/") | last | split(pat = "-") | first %}
+                    {% set chapter_number = chapter_prefix | int if chapter_prefix is matching(pat = "^[0-9]+$") else 0 %}
                     {% if chapter.toc %}
                         {% set_global sections = chapter.toc | first | get(key = "children") %}
                     {% else %}
@@ -52,7 +53,7 @@
                                 <ol class="list-unstyled mb-0 pl-3">
                                     {% for section in sections %}
                                         {% if section.id != "references" and section.id != "footnotes" %}
-                                            <li class="my-1"><a href="{{ chapter.path | safe }}#{{ section.id }}">{{ section.title | regex_replace(pattern = '^[0-9A-Z][0-9A-Z.]*\.\s+', rep = '') }}</a></li>
+                                            <li class="my-1"><a href="{{ chapter.path | safe }}#{{ section.id }}">{{ section.title | regex_replace(pattern = '^[0-9A-Z][0-9A-Z.]*\\.\\s+', rep = '') }}</a></li>
                                         {% endif %}
                                     {% endfor %}
                                 </ol>
@@ -71,20 +72,22 @@
                     </h1>
                 </header>
             {% endif %}
-            {% set has_sections = page.content is containing('<section>') or page.content is containing('<section id=') %}
+            {% set has_sections = page.content is containing(pat = '<section>') or page.content is containing(pat = '<section id=') %}
             {% if has_sections %}{% set closer = '</section>' %}{% else %}{% set closer = '' %}{% endif %}
-            {{ page.content ~ closer | safe }}
+            {{ page.content | safe }}{{ closer | safe }}
         </article>
 
         <nav class="n:buttons" aria-label="Adjacent chapters">
             {% if page.lower %}
-                {% set number = page.lower.relative_path | split(pat = "/") | last | split(pat = "-") | first | int(default = 0) %}
+                {% set prefix = page.lower.relative_path | split(pat = "/") | last | split(pat = "-") | first %}
+                {% set number = prefix | int if prefix is matching(pat = "^[0-9]+$") else 0 %}
                 <a class="n:left" href="{{ page.lower.path | safe }}">{% if number > 0 %}{{ number }}.&nbsp;{% endif %}{{ page.lower.title }}</a>
             {% else %}
                 <a class="n:left" href="/#contents">Contents</a>
             {% endif %}
             {% if page.higher %}
-                {% set number = page.higher.relative_path | split(pat = "/") | last | split(pat = "-") | first | int(default = 0) %}
+                {% set prefix = page.higher.relative_path | split(pat = "/") | last | split(pat = "-") | first %}
+                {% set number = prefix | int if prefix is matching(pat = "^[0-9]+$") else 0 %}
                 <a class="n:right ml-auto" href="{{ page.higher.path | safe }}">{% if number > 0 %}{{ number }}.&nbsp;{% endif %}{{ page.higher.title }}</a>
             {% else %}
                 <a class="n:right ml-auto" href="/#contents">Contents</a>

@@ -8,7 +8,7 @@ The links below are Markdown versions of each chapter.
 {%- for chapter in chapters.pages -%}
 {%- if chapter.slug == "preface" %}{%- continue -%}{%- endif -%}
 {%- set head = load_data(path = "content/" ~ chapter.relative_path, format = "plain") | split(pat = "## ") | first -%}
-- [{{ chapter.title }}]({{ config.base_url }}/md/{{ chapter.relative_path | split(pat = "/") | last }}){% if "🚧" in head %} (under construction){% endif %}{% if chapter.description %}: {{ chapter.description }}{% endif %}
+- [{{ chapter.title }}]({{ config.base_url }}/md/{{ chapter.relative_path | split(pat = "/") | last }}){% if head is containing(pat = "🚧") %} (under construction){% endif %}{% if chapter.description %}: {{ chapter.description }}{% endif %}
 {% endfor %}
 
 ## Bibliography

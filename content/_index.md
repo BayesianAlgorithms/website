@@ -8,7 +8,7 @@ cover = "cover.svg"
 
 # Contents
 
-{{ table_of_contents() }}
+{{ <table_of_contents/> }}
 
 # Updates
 
@@ -26,11 +26,11 @@ Please open a [GitHub issue](https://github.com/bayesianalgorithms/website/issue
 
 To cite the book, please use the following BibTeX entry:
 ```bibtex
-{{ bibtex_citation() }}
+{{ <bibtex_citation/> }}
 ```
 
 # Code
 
 Code is available in two GitHub repositories:
-- Reference implementation for benchmarks: {{ github(repo="BayesianAlgorithms/benchmarks") }}
-- The website's TeX-to-MD-to-HTML pipeline: {{ github(repo="BayesianAlgorithms/website") }}
+- Reference implementation for benchmarks: {{ <github repo="BayesianAlgorithms/benchmarks"/> }}
+- The website's TeX-to-MD-to-HTML pipeline: {{ <github repo="BayesianAlgorithms/website"/> }}

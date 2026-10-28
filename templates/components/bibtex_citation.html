@@ -1,1 +1,3 @@
+{% component bibtex_citation(@config) -%}
 {{ config.extra.citation | trim | replace(from="${DATE}", to=now() | date(format="%Y-%m-%d")) | replace(from="${YEAR}", to=now() | date(format="%Y")) | safe }}
+{%- endcomponent bibtex_citation %}

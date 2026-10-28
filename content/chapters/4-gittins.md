@@ -11,14 +11,14 @@ page = 65
 
 🚧 Under construction. Headings indicate planned content. 🚧
 
-{{ section() }}
+{{ <section first={true}/> }}
 
 ## 4.1. The Pandora's Box Decision Problem
 
-{{ section() }}
+{{ <section/> }}
 
 ## 4.2. The Gittins Index in Pandora's Box
 
-{{ section() }}
+{{ <section/> }}
 
 ## 4.3. Gittins Indices for General Decision Problems

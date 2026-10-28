@@ -1,5 +1,3 @@
-{% import 'macros/seo.html' as seo %}
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,10 +15,10 @@
 
         {% if page %}{% include "includes/katex.html" %}{% endif %}
 
-        <title>{{ config.title }}{% if page.title %}{{ ' | ' ~ page.title }}{% elif section.title and section.path != '/' %}{{ ' | ' ~ section.title }}{% endif %}</title>
+        <title>{{ config.title }}{% if page?.title %}{{ ' | ' ~ page.title }}{% elif section?.title and section.path != '/' %}{{ ' | ' ~ section.title }}{% endif %}</title>
 
         {% block seo %}
-        {{ seo::seo(page = section | default(value = page)) }}
+        {{ <seo page={section | default(value = page)}/> }}
         {% endblock %}
     </head>
 
