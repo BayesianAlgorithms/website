@@ -4,6 +4,7 @@ description = "A book about the mathematics of decision-making under uncertainty
 template = "index.html"
 [extra]
 cover = "cover.svg"
+status = "Work in progress: currently about 20% complete"
 +++
 
 # Contents

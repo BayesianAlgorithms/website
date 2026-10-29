@@ -19,6 +19,9 @@
             {% if section.description %}
                 <p class="h5 text-balanced"><em>{{ section.description }}</em></p>
             {% endif %}
+            {% if section.extra.status %}
+                <p class="h6 text-balanced mt-4"><em>{{ section.extra.status }}</em></p>
+            {% endif %}
             <hr class="asterism my-5">
         </header>
 
