@@ -1,5 +1,5 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 // TeX-to-Markdown converter for the BDMA chapters, organized as three passes.
 // The parse pass turns every chapter, line by line, into a list of plain
