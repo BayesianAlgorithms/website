@@ -71,7 +71,7 @@
 }
 .n\:menu > ol {
     margin: -0.5rem 0 0 (-$container-padding);
-    padding: 0.5rem $container-padding 0.5rem calc(2 * $container-padding);
+    padding: 0.5rem $container-padding 0.5rem calc(2 * $container-padding + 0.375rem);
     hyphens: none;
     mask-image: linear-gradient(to bottom, transparent, black 0.75rem, black calc(100% - 0.75rem), transparent);
     overflow-y: auto;
